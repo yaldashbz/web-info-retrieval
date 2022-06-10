@@ -3,21 +3,10 @@ import string
 
 
 class Normalizer:
-    def __init__(
-            self,
-            min_len: int = 2,
-            lower_cased: bool = True,
-            stopwords_removal: bool = True,
-            stopwords_domain: list = None,
-            punctuation_removal: bool = True
-    ):
+    def __init__(self, stopwords_domain: list = None):
         if stopwords_domain is None:
             stopwords_domain = list()
-        self.min_len = min_len
-        self.lower_cased = lower_cased
-        self.stopwords_removal = stopwords_removal
         self.stopwords_domain = stopwords_domain + nltk.corpus.stopwords.words('english')
-        self.punctuation_removal = punctuation_removal
 
     def remove_stopwords(self, sentences):
         stopwords = [x.lower() for x in self.stopwords_domain]
@@ -36,8 +25,21 @@ class Normalizer:
         return [[word for word in sentence if len(word) > self.min_len]
                 for sentence in sentences]
 
-    def normalize(self, tokenized_sentences):
+    def _set_kwargs(
+            self,
+            min_len: int = 2,
+            lower_cased: bool = True,
+            stopwords_removal: bool = True,
+            punctuation_removal: bool = True
+    ):
+        self.min_len = min_len
+        self.lower_cased = lower_cased
+        self.stopwords_removal = stopwords_removal
+        self.punctuation_removal = punctuation_removal
+
+    def normalize(self, tokenized_sentences, **kwargs):
         sentences = tokenized_sentences
+        self._set_kwargs(**kwargs)
         if self.stopwords_removal:
             sentences = self.remove_stopwords(sentences)
         if self.punctuation_removal:

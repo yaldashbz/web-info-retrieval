@@ -1,30 +1,32 @@
 import json
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 from preprocess import PreProcessor
 from data_collection.utils import get_keywords, DIVIDER
 
 
 @dataclass
-class EngineData:
+class Document:
     url: str
     tokens: List[List[str]]
-    keywords: List[str]
+    keywords: List[Tuple]
     content: str
 
     def __init__(self, url, content):
         self.url = url
-        self.tokens = PreProcessor().process(content)
-        self.content = DIVIDER.join([DIVIDER.join(sentence) for sentence in self.tokens])
-        self.keywords = get_keywords(content)
+        self.content = content
+        preprocessor = PreProcessor()
+        self.tokens = preprocessor.process(content, stopwords_removal=False, min_len=0)
+        keyword_tokens = preprocessor.normalize(self.tokens, stopwords_removal=True)
+        self.keywords = get_keywords(keyword_tokens)
 
     def __hash__(self):
         return hash(f'{self.url} - {self.content}')
 
     @classmethod
     def _convert(cls, data: List) -> List:
-        return [{'url': doc.url, 'tokens': doc.tokens} for doc in data]
+        return [{'url': doc.url, 'tokens': doc.tokens, 'keywords': doc.keywords} for doc in data]
 
     @classmethod
     def _cleanup(cls, data: List) -> List:

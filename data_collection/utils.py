@@ -1,8 +1,6 @@
-from collections import defaultdict
 from itertools import chain
-from typing import List
-
-from preprocess import PreProcessor
+from typing import List, Tuple
+from nltk import FreqDist
 
 DIVIDER = ' '
 
@@ -18,15 +16,9 @@ CATEGORIES = [
 ]
 
 
-def get_keywords(content: str) -> List[str]:
-    words = list()
-    for sentence in PreProcessor.tokenize(content):
-        words += sentence
-    count = defaultdict(int)
-    for word in words:
-        word = word.replace(',', '').replace('.', '').replace('?', '').replace('!', '').replace(';', '')
-        count[word] += 1
-    return list({k: v for k, v in sorted(count.items(), key=lambda item: item[1])}.keys())[-20:]
+def get_keywords(tokens: List[List[str]], count: int = 20) -> List[Tuple]:
+    words = get_words(tokens)
+    return FreqDist(words).most_common(count)
 
 
 def get_contents(data: List):
@@ -36,9 +28,9 @@ def get_contents(data: List):
     ]
 
 
-def get_sentences(doc):
-    return [' '.join(words) for words in doc['tokens']]
+def get_sentences(tokens: List[List[str]]):
+    return [DIVIDER.join(words) for words in tokens]
 
 
-def get_words(doc):
-    return list(chain(*doc['tokens']))
+def get_words(tokens: List[List[str]]):
+    return list(chain(*tokens))

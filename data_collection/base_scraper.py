@@ -4,13 +4,13 @@ from typing import List
 import requests
 from bs4 import BeautifulSoup
 
-from data_collection.data import EngineData
+from data_collection.data import Document
 
 
 class BaseWebScraper(ABC):
 
     @abstractmethod
-    def scrape(self) -> List[EngineData]:
+    def scrape(self) -> List[Document]:
         """Scrape data from web"""
         raise NotImplementedError
 

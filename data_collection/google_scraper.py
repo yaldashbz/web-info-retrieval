@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 from tqdm import tqdm
 
-from data_collection.data import EngineData
+from data_collection.data import Document
 from data_collection.base_scraper import BaseWebScraper
 from data_collection.utils import CATEGORIES
 
@@ -43,7 +43,7 @@ class GoogleScraper(BaseWebScraper):
             'Referer': 'https://www.google.com/'
         }
 
-    def scrape(self, **kwargs) -> List[EngineData]:
+    def scrape(self, **kwargs) -> List[Document]:
         result = list()
         for category in CATEGORIES:
             result += self.search(category)
@@ -53,7 +53,7 @@ class GoogleScraper(BaseWebScraper):
         headers = self.google_headers if is_google else self.headers
         return requests.get(url, headers=headers, timeout=10, allow_redirects=False)
 
-    def search(self, query: str) -> List[EngineData]:
+    def search(self, query: str) -> List[Document]:
         result = set()
         for i in tqdm(range(0, 100, 10)):
             response = self._get_source(f'https://www.google.com/search?q={quote(query)}&start={i}')
@@ -69,7 +69,7 @@ class GoogleScraper(BaseWebScraper):
                     content = self.get_content(url)
                     if content is None:
                         continue
-                    result.add(EngineData(**{
+                    result.add(Document(**{
                         'url': url,
                         'content': content
                     }))
