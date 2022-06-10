@@ -14,7 +14,6 @@ wikipedia.set_rate_limiting(True)
 
 class WikiScraper(BaseWebScraper):
     def __init__(self):
-        self.titles = []  # TODO: remove
         self.categories = CATEGORIES
 
     def scrape(
@@ -27,13 +26,12 @@ class WikiScraper(BaseWebScraper):
         return self._linked_scrape(max_depth) if use_linked else self._scrape(max_depth)
 
     def _scrape(self, max_depth) -> List[Document]:
-        self.titles = self._get_titles(list(), self.categories, max_depth)
-        return self._get_data(self.titles)
+        titles = self._get_titles(list(), self.categories, max_depth)
+        return self._get_data(titles)
 
     def _linked_scrape(self, max_depth) -> List[Document]:
         titles = self._get_titles(list(), self.categories, max_depth)
         linked_titles, base_data = self._get_linked_titles(titles)
-        self.titles = titles.union(linked_titles)
         linked_data = self._get_data(linked_titles)
         return list(set(base_data).union(linked_data))
 
