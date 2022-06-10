@@ -20,13 +20,13 @@ class PreProcessor:
         return [pos_tag(sentence) for sentence in sentences] \
             if self.pos_tagging else sentences
 
-    def normalize(self, sentences):
-        return self.normalizer.normalize(sentences)
+    def normalize(self, sentences, **kwargs):
+        return self.normalizer.normalize(sentences, **kwargs)
 
     def lemmatize(self, sentences):
         return self.lemmatizer.lemmatize(sentences)
 
-    def process(self, content):
+    def process(self, content, **normalizer_kwargs):
         tokenized = self.tag(self.tokenize(content))
-        normalized = self.normalize(tokenized)
+        normalized = self.normalize(tokenized, **normalizer_kwargs)
         return self.lemmatize(normalized)

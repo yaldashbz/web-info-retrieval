@@ -1,6 +1,5 @@
-from retriever.data import EngineData
-from retriever.scrapers import WikiScraper
-from retriever.scrapers.google_scraper import GoogleScraper
+from data_collection.data import EngineData
+from data_collection import WikiScraper, GoogleScraper
 
 _scrapers = {
     'wiki': WikiScraper,
