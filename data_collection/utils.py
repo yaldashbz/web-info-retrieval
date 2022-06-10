@@ -16,8 +16,8 @@ CATEGORIES = [
 ]
 
 
-def get_keywords(doc: List[List[str]], count: int = 20) -> List[Tuple]:
-    words = get_words(doc)
+def get_keywords(tokens: List[List[str]], count: int = 20) -> List[Tuple]:
+    words = get_words(tokens)
     return FreqDist(words).most_common(count)
 
 
@@ -28,9 +28,9 @@ def get_contents(data: List):
     ]
 
 
-def get_sentences(doc):
-    return [' '.join(words) for words in doc['tokens']]
+def get_sentences(tokens: List[List[str]]):
+    return [DIVIDER.join(words) for words in tokens]
 
 
-def get_words(doc):
-    return list(chain(*doc['tokens']))
+def get_words(tokens: List[List[str]]):
+    return list(chain(*tokens))

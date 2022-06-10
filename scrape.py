@@ -1,4 +1,4 @@
-from data_collection.data import EngineData
+from data_collection.data import Document
 from data_collection import WikiScraper, GoogleScraper
 
 _scrapers = {
@@ -9,7 +9,7 @@ _scrapers = {
 
 def run(scraper, data_path, **kwargs):
     data = scraper().scrape(**kwargs)
-    EngineData.save(data, data_path)
+    Document.save(data, data_path)
 
 
 if __name__ == '__main__':

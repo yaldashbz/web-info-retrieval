@@ -7,7 +7,7 @@ from data_collection.utils import get_keywords, DIVIDER
 
 
 @dataclass
-class EngineData:
+class Document:
     url: str
     tokens: List[List[str]]
     keywords: List[Tuple]
@@ -19,8 +19,7 @@ class EngineData:
         preprocessor = PreProcessor()
         self.tokens = preprocessor.process(content, stopwords_removal=False, min_len=0)
         keyword_tokens = preprocessor.normalize(self.tokens, stopwords_removal=True)
-        processed_content = DIVIDER.join([DIVIDER.join(sentence) for sentence in keyword_tokens])
-        self.keywords = get_keywords(processed_content)
+        self.keywords = get_keywords(keyword_tokens)
 
     def __hash__(self):
         return hash(f'{self.url} - {self.content}')

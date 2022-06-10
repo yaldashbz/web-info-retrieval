@@ -4,7 +4,7 @@ import wikipedia
 from tqdm import tqdm
 from wikipedia import WikipediaException
 
-from data_collection.data import EngineData
+from data_collection.data import Document
 from data_collection.base_scraper import BaseWebScraper
 from data_collection.utils import CATEGORIES
 
@@ -22,15 +22,15 @@ class WikiScraper(BaseWebScraper):
             url: str = None,
             max_depth: int = 3,
             use_linked: bool = False
-    ) -> List[EngineData]:
+    ) -> List[Document]:
 
         return self._linked_scrape(max_depth) if use_linked else self._scrape(max_depth)
 
-    def _scrape(self, max_depth) -> List[EngineData]:
+    def _scrape(self, max_depth) -> List[Document]:
         self.titles = self._get_titles(list(), self.categories, max_depth)
         return self._get_data(self.titles)
 
-    def _linked_scrape(self, max_depth) -> List[EngineData]:
+    def _linked_scrape(self, max_depth) -> List[Document]:
         titles = self._get_titles(list(), self.categories, max_depth)
         linked_titles, base_data = self._get_linked_titles(titles)
         self.titles = titles.union(linked_titles)
@@ -49,25 +49,25 @@ class WikiScraper(BaseWebScraper):
         return cls._get_titles(titles, new_subjects, max_depth - 1)
 
     @classmethod
-    def _get_linked_titles(cls, titles) -> Tuple[Set[str], List[EngineData]]:
+    def _get_linked_titles(cls, titles) -> Tuple[Set[str], List[Document]]:
         links = list()
         base_data = list()
         for title in titles:
             try:
                 page = wikipedia.page(title)
                 links += page.links
-                base_data.append(EngineData(url=page.url, content=page.content))
+                base_data.append(Document(url=page.url, content=page.content))
             except WikipediaException:
                 continue
         return set(links), base_data
 
     @classmethod
-    def _get_data(cls, titles) -> List[EngineData]:
+    def _get_data(cls, titles) -> List[Document]:
         data = list()
         for title in tqdm(titles):
             try:
                 page = wikipedia.page(title)
-                data.append(EngineData(url=page.url, content=page.content))
+                data.append(Document(url=page.url, content=page.content))
             except WikipediaException:
                 continue
         return data
