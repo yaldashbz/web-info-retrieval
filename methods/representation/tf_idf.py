@@ -8,12 +8,16 @@ from methods.representation.base import BaseRepresentation
 
 
 class TFIDFRepresentation(BaseRepresentation):
-    _PATH = 'matrices'
+    _PATH = '../matrices'
     _FILE = 'tfidf.json'
 
     def __init__(self, data, load: bool = False):
         super().__init__(data)
         contents = self.prepare_data()
+
+        if load and not os.path.exists(os.path.join(self._PATH, self._FILE)):
+            raise ValueError
+
         self.tfidf = TfidfVectorizer(use_idf=True, norm='l2', analyzer='word')
         if not load:
             self.matrix = self.tfidf.fit_transform(contents)
@@ -22,8 +26,6 @@ class TFIDFRepresentation(BaseRepresentation):
             self._save()
         else:
             self.df = self._load()
-            self.matrix = self.df.to_numpy()
-            self.vocab = list(self.df.columns)
 
     def _load(self):
         return pd.read_json(os.path.join(self._PATH, self._FILE))

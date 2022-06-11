@@ -9,12 +9,16 @@ from methods.representation.base import BaseRepresentation
 
 
 class BertRepresentation(BaseRepresentation):
-    _PATH = 'embeddings'
+    _PATH = '../embeddings'
     _FILE = 'bert_embeddings.json'
 
     def __init__(self, data, load: bool = False):
         super().__init__(data)
         contents = self.prepare_data()
+
+        if load and not os.path.exists(os.path.join(self._PATH, self._FILE)):
+            raise ValueError
+
         if not load:
             self.model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
             self._to_cuda()
