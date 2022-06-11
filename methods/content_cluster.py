@@ -1,7 +1,10 @@
+from typing import Tuple
+
 import pandas as pd
 from sklearn.cluster import KMeans
+from yellowbrick.cluster import KElbowVisualizer
 
-from data_collection.utils import get_sentences, get_content
+from data_collection.utils import get_content
 from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
 
 _representations = {
@@ -38,3 +41,8 @@ class ContentKMeanCluster:
         result_df['content'] = result_df['tokens'].apply(get_content)
         result_df.pop('tokens')
         return result_df
+
+    def elbow_visualize(self, k_range: Tuple[int, int]):
+        model = KMeans(random_state=1)
+        visualizer = KElbowVisualizer(model, k=k_range).fit(self.represented_df)
+        visualizer.show()
