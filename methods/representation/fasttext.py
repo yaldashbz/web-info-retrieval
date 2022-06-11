@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from gensim.models.fasttext import FastText
 
 from data_collection.utils import get_doc_words
@@ -49,7 +50,7 @@ class FasttextRepresentation(BaseRepresentation):
 
     def _get_doc_embedding_avg(self):
         docs_avg = dict()
-        for index, doc in enumerate(self.data):
+        for index, doc in tqdm(enumerate(self.data)):
             words = get_doc_words(doc)
             docs_avg[index] = np.mean([self.fasttext.wv[word] for word in words], axis=0)
         return docs_avg
