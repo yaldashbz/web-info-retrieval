@@ -13,9 +13,7 @@ class ContentKMeanCluster:
         self.representation = _representations[method](data)
         self.represented_df = self.representation.represent()
 
-    def _kmeans_fit(self, k: int = 2):
-        kmeans = KMeans(n_clusters=k, random_state=1)
-        return kmeans.fit(self.represented_df)
-
     def run(self, k: int = 2):
-        return dict(estimator=self._kmeans_fit(k), k=k)
+        kmeans = KMeans(n_clusters=k, random_state=1)
+        estimator = kmeans.fit(self.represented_df)
+        return kmeans, estimator
