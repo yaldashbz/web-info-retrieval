@@ -15,9 +15,9 @@ _representations = {
 
 
 class ContentKMeanCluster:
-    def __init__(self, data, method: str = 'tf-idf'):
+    def __init__(self, data, method: str = 'tf-idf',  **repr_kwargs):
         self.data = data
-        self.representation = _representations[method](data)
+        self.representation = _representations[method](data=data, **repr_kwargs)
         self.represented_df = self.representation.represent()
         self.k_means = None
         self.estimator = None
