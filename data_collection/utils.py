@@ -22,10 +22,7 @@ def get_keywords(tokens: List[List[str]], count: int = 20) -> List[Tuple]:
 
 
 def get_contents(data: List):
-    return [
-        DIVIDER.join([DIVIDER.join(sentence) for sentence in doc['tokens']])
-        for doc in data
-    ]
+    return [DIVIDER.join(get_sentences(doc['tokens'])) for doc in data]
 
 
 def get_sentences(tokens: List[List[str]]):

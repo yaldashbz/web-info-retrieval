@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 from preprocess import PreProcessor
-from data_collection.utils import get_keywords, DIVIDER
+from data_collection.utils import get_keywords
 
 
 @dataclass
