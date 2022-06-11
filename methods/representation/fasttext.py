@@ -1,3 +1,4 @@
+import re
 import os
 import numpy as np
 import pandas as pd
@@ -52,7 +53,9 @@ class FasttextRepresentation(BaseRepresentation):
         docs_avg = dict()
         for index, doc in tqdm(enumerate(self.data)):
             words = get_doc_words(doc)
-            docs_avg[index] = np.mean([self.fasttext.wv[word] for word in words], axis=0)
+            docs_avg[index] = np.mean([
+                self.fasttext.wv[word] for word in words if re.fullmatch('\\w+', word)
+            ], axis=0)
         return docs_avg
 
     def represent(self) -> pd.DataFrame:
