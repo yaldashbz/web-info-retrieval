@@ -21,16 +21,25 @@ def get_keywords(tokens: List[List[str]], count: int = 20) -> List[Tuple]:
     return FreqDist(words).most_common(count)
 
 
+def get_content(tokens: List[List[str]]):
+    return DIVIDER.join(get_sentences(tokens))
+
+
 def get_contents(data: List):
-    return [
-        DIVIDER.join([DIVIDER.join(sentence) for sentence in doc['tokens']])
-        for doc in data
-    ]
+    return [get_content(doc['tokens']) for doc in data]
 
 
 def get_sentences(tokens: List[List[str]]):
     return [DIVIDER.join(words) for words in tokens]
 
 
+def get_doc_sentences(doc):
+    return get_sentences(doc['tokens'])
+
+
 def get_words(tokens: List[List[str]]):
     return list(chain(*tokens))
+
+
+def get_doc_words(doc):
+    return get_words(doc['tokens'])
