@@ -1,10 +1,11 @@
 from sklearn.cluster import KMeans
 
-from methods.representation import TFIDFRepresentation, BertRepresentation
+from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
 
 _representations = {
     'tf-idf': TFIDFRepresentation,
-    'bert': BertRepresentation
+    'bert': BertRepresentation,
+    'fasttext': FasttextRepresentation
 }
 
 

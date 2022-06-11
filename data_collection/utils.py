@@ -35,3 +35,7 @@ def get_doc_sentences(doc):
 
 def get_words(tokens: List[List[str]]):
     return list(chain(*tokens))
+
+
+def get_doc_words(doc):
+    return get_words(doc['tokens'])
