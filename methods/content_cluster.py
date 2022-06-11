@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from yellowbrick.cluster import KElbowVisualizer
 
-from data_collection.utils import get_doc_content
+from data_collection.utils import get_content
 from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
 
 _representations = {
@@ -38,7 +38,7 @@ class ContentKMeanCluster:
 
         result = self._get_result()
         result_df = pd.DataFrame(result)
-        result_df['content'] = result_df['tokens'].apply(get_doc_content)
+        result_df['content'] = result_df['tokens'].apply(get_content)
         result_df.pop('tokens')
         return result_df
 
