@@ -61,5 +61,5 @@ class FasttextRepresentation(BaseRepresentation):
     def represent(self) -> pd.DataFrame:
         return pd.DataFrame(
             data=self.doc_embedding_avg.values(),
-            columns=self.doc_embedding_avg.keys()
+            index=self.doc_embedding_avg.keys()
         )
