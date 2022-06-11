@@ -29,5 +29,9 @@ def get_sentences(tokens: List[List[str]]):
     return [DIVIDER.join(words) for words in tokens]
 
 
+def get_doc_sentences(doc):
+    return get_sentences(doc['tokens'])
+
+
 def get_words(tokens: List[List[str]]):
     return list(chain(*tokens))
