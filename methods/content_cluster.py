@@ -1,5 +1,7 @@
+import pandas as pd
 from sklearn.cluster import KMeans
 
+from data_collection.utils import get_sentences, get_content
 from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
 
 _representations = {
@@ -11,10 +13,28 @@ _representations = {
 
 class ContentKMeanCluster:
     def __init__(self, data, method: str = 'tf-idf'):
+        self.data = data
         self.representation = _representations[method](data)
         self.represented_df = self.representation.represent()
+        self.k_means = None
+        self.estimator = None
 
     def run(self, k: int = 2):
-        kmeans = KMeans(n_clusters=k, random_state=1)
-        estimator = kmeans.fit(self.represented_df)
-        return kmeans, estimator
+        self.k_means = KMeans(n_clusters=k, random_state=1)
+        self.estimator = self.k_means.fit(self.represented_df)
+        return self.k_means, self.estimator
+
+    def _get_result(self):
+        result = self.data
+        for doc_id, cluster_id in enumerate(self.k_means.labels_):
+            result[doc_id].update(cluster_id=cluster_id)
+        return result
+
+    def analyse(self) -> pd.DataFrame:
+        assert self.k_means and self.estimator
+
+        result = self._get_result()
+        result_df = pd.DataFrame(result)
+        result_df['content'] = result_df['tokens'].apply(get_content)
+        result_df.pop('tokens')
+        return result_df
