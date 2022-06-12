@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import silhouette_samples
 
 
-def plot_silhouette(df, n, labels, avg):
+def plot_silhouette(df, n, labels, score):
     fig, ax = plt.subplots(1)
     fig.set_size_inches(8, 6)
     ax.set_xlim([-0.2, 1])
     ax.set_ylim([0, len(df) + (n + 1) * 10])
 
-    ax.axvline(x=avg, color="red", linestyle="--")
+    ax.axvline(x=score, color="red", linestyle="--")
     ax.set_yticks([])
     ax.set_xticks([-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
     plt.title(("Silhouette analysis for K = %d" % n), fontsize=10, fontweight='bold')

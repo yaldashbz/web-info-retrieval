@@ -1,14 +1,12 @@
 from abc import abstractmethod, ABC
 
+from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
 from methods.utils import plot_silhouette
 
 
 class BaseValidator(ABC):
-    def __init__(self, use_plot: bool = False):
-        self.use_plot = use_plot
-
     @abstractmethod
     def plot(self, **kwargs):
         raise NotImplementedError
@@ -19,14 +17,21 @@ class BaseValidator(ABC):
 
 
 class SilhouetteValidator(BaseValidator):
-    def plot(self, df, n, labels, avg):
-        plot_silhouette(df, n, labels, avg)
+    def plot(self, df, n, labels, score):
+        plot_silhouette(df, n, labels, score)
 
-    def validate(self, estimator, k, df):
-        df = df.to_numpy()
-        avg_dict = dict()
+    def validate(self, estimator: KMeans, k, repr_df, use_plot: bool = True):
+        df = repr_df.to_numpy()
         labels = estimator.predict(df)
-        avg = silhouette_score(df, labels)
-        avg_dict[avg] = k
-        if self.use_plot:
-            self.plot(df, k, labels, avg)
+        score = silhouette_score(df, labels)
+        if use_plot:
+            self.plot(df, k, labels, score)
+        return score
+
+
+class RSSValidator(BaseValidator):
+    def plot(self, **kwargs):
+        return None
+
+    def validate(self, estimator: KMeans):
+        return estimator.inertia_
