@@ -20,12 +20,13 @@ class ContentKMeanCluster:
         self.representation = _representations[method](data=data, **repr_kwargs)
         self.represented_df = self.representation.represent()
         self.k_means = None
-        self.estimator = None
 
     def run(self, k: int = 2):
-        self.k_means = KMeans(n_clusters=k, random_state=1)
-        self.estimator = self.k_means.fit(self.represented_df)
-        return self.k_means, self.estimator
+        self.k_means = KMeans(
+            n_clusters=k,
+            random_state=1
+        ).fit(self.represented_df)
+        return self.k_means
 
     def _get_result(self):
         result = self.data
@@ -34,7 +35,7 @@ class ContentKMeanCluster:
         return result
 
     def analyse(self) -> pd.DataFrame:
-        assert self.k_means and self.estimator
+        assert self.k_means
 
         result = self._get_result()
         result_df = pd.DataFrame(result)
