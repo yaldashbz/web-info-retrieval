@@ -27,6 +27,7 @@ class TFIDFSearcher:
     def _get_results(self, scores, k):
         out = np.array(scores).argsort()[-k:][::-1]
         return [dict(
+            index=index,
             url=self.data[index]['url'],
             score=scores[index]
         ) for index in out]
