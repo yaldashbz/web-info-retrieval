@@ -27,3 +27,13 @@ class ContentLinkAnalyser:
             self._get_most_relevant(self.hubs),
             self._get_most_relevant(self.authorities)
         )
+
+
+if __name__ == '__main__':
+    a = ContentLinkAnalyser(
+        data=[[['my', 'name', 'is', 'yalda'], ['salaam', 'chetori'], ['this', 'is', 'test', 'yalda']],
+              [['my', 'ghodghs', 'is', 'yalda'], ['erf', 'writes'], ['am', 'is', 'pl']]],
+        sent_num=2, min_similar=2,
+        weighted=True)
+    p = a.apply_pagerank()
+    print(p, a.pagerank)

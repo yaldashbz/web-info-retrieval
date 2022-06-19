@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from itertools import chain
 from typing import List
+from tqdm import tqdm
 
 from methods.linking.utils import count_same_words
 
@@ -11,7 +12,7 @@ class GraphBuilder:
             self,
             data: List,
             sent_num: int = 3,
-            min_similar: int = 3
+            min_similar: int = 5
     ):
         self.graph = nx.Graph()
         dataset = self._prepare_data(data)
@@ -42,11 +43,11 @@ class GraphBuilder:
 
     def _get_edges(self, nodes):
         return [(node, other) for other in nodes
-                for node in nodes if self._has_edge(node, other) and node != other]
+                for node in tqdm(nodes) if self._has_edge(node, other) and node != other]
 
     def _get_weighted_edges(self, nodes):
         edges = []
-        for node in nodes:
+        for node in tqdm(nodes):
             for other in nodes:
                 if node != other:
                     score = self._get_score(node, other)
