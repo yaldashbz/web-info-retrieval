@@ -17,7 +17,7 @@ class Document:
         self.url = url
         self.content = content
         preprocessor = PreProcessor()
-        self.tokens = preprocessor.process(content, stopwords_removal=False, min_len=0)
+        self.tokens = preprocessor.tokenize(content)
         keyword_tokens = preprocessor.normalize(self.tokens, stopwords_removal=True)
         self.keywords = get_keywords(keyword_tokens)
 

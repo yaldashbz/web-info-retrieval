@@ -35,3 +35,7 @@ def plot_silhouette(df, n, labels, score):
 
 def cosine_sim(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+
+def get_docs_with_urls(data, urls):
+    return [doc for doc in data if doc['url'] in urls]
