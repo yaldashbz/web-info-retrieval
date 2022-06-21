@@ -4,10 +4,10 @@ from itertools import chain
 from typing import List
 
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
 from data_collection.utils import get_sentences
-from methods import cosine_sim
 from methods.linking.utils import count_same_words
 
 
@@ -86,10 +86,20 @@ class TFIDFGraphBuilder(GraphBuilder):
         super().__init__(dataset, sent_num, min_similar)
         self.tfidf = TfidfVectorizer(use_idf=True, norm='l2', analyzer='word')
         contents = get_sentences(self.paragraphs)
+        print(contents)
         self.matrix = self.tfidf.fit_transform(contents)
 
-    def _get_score(self, node, other):
-        return cosine_sim(
-            self.matrix[node].toarray().squeeze(),
-            self.matrix[other].T.toarray().squeeze()
-        )
+    # def _get_score(self, node, other):
+    #     return cosine_sim(
+    #         self.matrix[node].toarray().squeeze(),
+    #         self.matrix[other].T.toarray().squeeze()
+    #     )
+
+    def build(self):
+        return self.build_weighted()
+
+    def build_weighted(self):
+        P = self.matrix.dot(self.matrix.T)
+        P_norm = normalize(P, norm='l1')
+        self.graph = nx.from_numpy_array(P_norm)
+        return self.graph
