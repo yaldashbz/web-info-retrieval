@@ -1,5 +1,4 @@
 from itertools import chain
-from typing import Dict
 
 import numpy as np
 import networkx as nx
@@ -25,9 +24,8 @@ class ContentLinkAnalyser:
             min_similar=min_similar
         )
         self.graph = self.builder.build_weighted() if weighted else self.builder.build()
-        self.pagerank = None
-        self.hubs = None
-        self.authorities = None
+        self.pagerank = nx.pagerank(self.graph)
+        self.hubs, self.authorities = nx.hits(self.graph)
 
     def _get_most_relevant(self, rank: int):
         return ' '.join(list(chain(*list(chain(
@@ -36,18 +34,21 @@ class ContentLinkAnalyser:
     def _get_most_cleaned_relevant(self, rank: int):
         return ' '.join(self.builder.paragraphs[rank])
 
-    def apply_pagerank(self):
-        self.pagerank = nx.pagerank(self.graph)
+    def apply_pagerank(self, clean_output: bool = True):
         rank = np.argmax(list(self.pagerank.values()))
-        return self._get_most_relevant(rank), self._get_most_cleaned_relevant(rank)
+        if clean_output:
+            return self._get_most_cleaned_relevant(rank)
+        return self._get_most_relevant(rank)
 
-    def apply_hits(self):
-        self.hubs, self.authorities = nx.hits(self.graph)
+    def apply_hits(self, clean_output: bool = True):
         h_rank = np.argmax(list(self.hubs.values()))
         a_rank = np.argmax(list(self.authorities.values()))
+        if clean_output:
+            return (
+                self._get_most_cleaned_relevant(h_rank),
+                self._get_most_cleaned_relevant(a_rank),
+            )
         return (
             self._get_most_relevant(h_rank),
-            self._get_most_cleaned_relevant(h_rank),
             self._get_most_relevant(a_rank),
-            self._get_most_cleaned_relevant(a_rank)
         )
