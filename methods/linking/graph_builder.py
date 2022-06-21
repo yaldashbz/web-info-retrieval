@@ -1,3 +1,4 @@
+import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from itertools import chain
@@ -96,6 +97,8 @@ class TFIDFGraphBuilder(_BaseGraphBuilder):
 
     def build_weighted(self):
         P = self.matrix.dot(self.matrix.T)
+        for i in range(P.shape[0]):
+            P[i, i] = 0
         P_norm = normalize(P, norm='l1')
         self.graph = nx.from_numpy_array(P_norm)
         return self.graph
