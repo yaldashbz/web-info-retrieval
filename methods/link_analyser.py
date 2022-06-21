@@ -58,10 +58,3 @@ class ContentLinkAnalyser:
             self._get_most_relevant(h_rank),
             self._get_most_relevant(a_rank),
         )
-
-if __name__ == '__main__':
-    data = [[['salam', 'yalda'], ['chetri', 'khbi']], [['salam', 'yalda']]]
-    a = ContentLinkAnalyser(data, data, 'word', sent_num=2, min_similar=0.5)
-    b = ContentLinkAnalyser(data, data, 'tf-idf', sent_num=2, min_similar=0.5)
-    print(nx.to_numpy_array(a.builder.graph))
-    print(nx.to_numpy_array(b.builder.graph))
