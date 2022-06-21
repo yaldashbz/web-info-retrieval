@@ -20,7 +20,7 @@ class ContentLinkAnalyser:
         self.cleaned_dataset = cleaned_dataset
         self.sent_num = sent_num
         self.builder = GraphBuilder(
-            dataset=list(chain(*dataset)),
+            dataset=list(chain(*cleaned_dataset)),
             sent_num=sent_num,
             min_similar=min_similar
         )
