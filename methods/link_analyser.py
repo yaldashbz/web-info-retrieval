@@ -3,7 +3,12 @@ from itertools import chain
 import numpy as np
 import networkx as nx
 
-from methods.linking.graph_builder import GraphBuilder
+from methods.linking.graph_builder import GraphBuilder, TFIDFGraphBuilder
+
+_builder = {
+    'word': GraphBuilder,
+    'tf-idf': TFIDFGraphBuilder
+}
 
 
 class ContentLinkAnalyser:
@@ -11,6 +16,7 @@ class ContentLinkAnalyser:
             self,
             dataset,
             cleaned_dataset,
+            method: str = 'word',
             weighted: bool = True,
             sent_num: int = 3,
             min_similar: int = 5
@@ -18,7 +24,7 @@ class ContentLinkAnalyser:
         self.dataset = dataset
         self.cleaned_dataset = cleaned_dataset
         self.sent_num = sent_num
-        self.builder = GraphBuilder(
+        self.builder = _builder[method](
             dataset=list(chain(*cleaned_dataset)),
             sent_num=sent_num,
             min_similar=min_similar
