@@ -19,7 +19,7 @@ class ContentLinkAnalyser:
             method: str = 'word',
             weighted: bool = True,
             sent_num: int = 3,
-            min_similar: int = 5
+            min_similar: float = 5
     ):
         self.dataset = dataset
         self.cleaned_dataset = cleaned_dataset
