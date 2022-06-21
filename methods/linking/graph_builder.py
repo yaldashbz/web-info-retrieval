@@ -86,14 +86,7 @@ class TFIDFGraphBuilder(GraphBuilder):
         super().__init__(dataset, sent_num, min_similar)
         self.tfidf = TfidfVectorizer(use_idf=True, norm='l2', analyzer='word')
         contents = get_sentences(self.paragraphs)
-        print(contents)
         self.matrix = self.tfidf.fit_transform(contents)
-
-    # def _get_score(self, node, other):
-    #     return cosine_sim(
-    #         self.matrix[node].toarray().squeeze(),
-    #         self.matrix[other].T.toarray().squeeze()
-    #     )
 
     def build(self):
         return self.build_weighted()
