@@ -23,13 +23,10 @@ if __name__ == '__main__':
                         help='Max depth for wiki scraper')
     parser.add_argument('--scraper', '-s', type=str, default='google',
                         help='Chosen scraper')
-    parser.add_argument('--labeled', '-l', type=bool, default=False,
-                        help='Add labels to the dataset')
 
     args = parser.parse_args()
     run(
         scraper=_scrapers[args.scraper],
         data_path=args.path,
-        max_depth=args.depth,
-        add_labels=args.labeled
+        max_depth=args.depth
     )
