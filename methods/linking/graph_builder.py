@@ -11,7 +11,7 @@ from data_collection.utils import get_sentences
 from methods.linking.utils import count_same_words
 
 
-class GraphBuilder:
+class _BaseGraphBuilder:
     def __init__(
             self,
             dataset: List,
@@ -27,6 +27,9 @@ class GraphBuilder:
         num = self.sent_num
         return [list(chain(*data[i:i + num]))
                 for i in range(0, len(data), num)]
+
+
+class GraphBuilder(_BaseGraphBuilder):
 
     def _get_nodes(self):
         return list(range(len(self.paragraphs)))
@@ -76,7 +79,7 @@ class GraphBuilder:
         plt.show()
 
 
-class TFIDFGraphBuilder(GraphBuilder):
+class TFIDFGraphBuilder(_BaseGraphBuilder):
     def __init__(
             self,
             dataset: List,
