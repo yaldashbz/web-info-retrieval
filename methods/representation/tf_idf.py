@@ -8,8 +8,7 @@ from methods.representation.base import BaseRepresentation
 
 
 class TFIDFRepresentation(BaseRepresentation):
-    # TODO: remove load
-    def __init__(self, data, load: bool = False):
+    def __init__(self, data):
         super().__init__(data)
         contents = self.prepare_data()
 
