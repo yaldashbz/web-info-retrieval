@@ -10,19 +10,14 @@ from methods.linking.utils import count_same_words
 class GraphBuilder:
     def __init__(
             self,
-            data: List,
-            sent_num: int = 3,
-            min_similar: int = 5
+            dataset: List,
+            sent_num: int,
+            min_similar: int
     ):
         self.graph = nx.Graph()
-        dataset = self._prepare_data(data)
         self.sent_num = sent_num
         self.min_similar = max(0, min_similar)
         self.paragraphs = self._get_paragraphs(dataset)
-
-    @classmethod
-    def _prepare_data(cls, data):
-        return list(chain(*data))
 
     def _get_paragraphs(self, data):
         num = self.sent_num

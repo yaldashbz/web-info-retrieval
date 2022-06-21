@@ -87,7 +87,8 @@ class GoogleScraper(BaseWebScraper):
             raise KeyError
         return self.text_from_html(response.text)
 
-    def tag_visible(self, element):
+    @classmethod
+    def tag_visible(cls, element):
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
             return False
         if isinstance(element, Comment):
