@@ -34,7 +34,7 @@ class ContentLinkAnalyser:
             *self.dataset))[rank * self.sent_num: rank * self.sent_num + self.sent_num])))
 
     def _get_most_cleaned_relevant(self, rank: int):
-        return self.builder.paragraphs[rank]
+        return ' '.join(self.builder.paragraphs[rank])
 
     def apply_pagerank(self):
         self.pagerank = nx.pagerank(self.graph)
