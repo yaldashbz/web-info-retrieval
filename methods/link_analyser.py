@@ -3,7 +3,7 @@ from itertools import chain
 import numpy as np
 import networkx as nx
 
-from methods.linking.graph import GraphBuilder
+from methods.linking.graph_builder import GraphBuilder
 
 
 class ContentLinkAnalyser:
