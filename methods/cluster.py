@@ -2,9 +2,11 @@ from typing import Tuple
 
 import pandas as pd
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 from yellowbrick.cluster import KElbowVisualizer
 
 from data_collection.utils import get_content
+from methods.utils import plot_silhouette
 from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
 
 _representations = {
@@ -47,3 +49,14 @@ class ContentKMeanCluster:
         model = KMeans(random_state=1)
         visualizer = KElbowVisualizer(model, k=k_range).fit(self.represented_df)
         visualizer.show()
+
+    def silhouette_evaluate(self, plot: bool = False):
+        k = self.k_means.n_clusters
+        df = self.represented_df.to_numpy()
+        labels = self.k_means.predict(df)
+        score = silhouette_score(df, labels)
+        if plot:
+            plot_silhouette(df, k, labels, score)
+
+    def rss_evaluate(self):
+        return self.k_means.inertia_
