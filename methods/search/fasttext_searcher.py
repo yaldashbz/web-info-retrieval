@@ -3,12 +3,15 @@ import numpy as np
 
 from methods import cosine_sim, FasttextRepresentation
 from methods.search.base import BaseSearcher
+from methods.search.utils import TOKENS_KEY
 
 
 class FasttextSearcher(BaseSearcher):
-    def __init__(self, data, train: bool = True, min_count: int = 1):
-        super().__init__(data)
-        self.representation = FasttextRepresentation(data, train=train, min_count=min_count)
+    def __init__(self, data, train: bool = True, min_count: int = 1, tokens_key: str = TOKENS_KEY):
+        super().__init__(data, tokens_key)
+        self.representation = FasttextRepresentation(
+            data, train=train, min_count=min_count, tokens_key=tokens_key
+        )
 
     def _get_query_embedding_avg(self, tokens):
         return np.mean([self.representation.fasttext.wv[token] for token in tokens], axis=0)

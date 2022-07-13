@@ -6,7 +6,7 @@ from tqdm import tqdm
 from gensim.models.fasttext import FastText
 
 from data_collection.utils import get_doc_words
-from methods.representation import BaseRepresentation
+from methods.representation import BaseRepresentation, TOKENS_KEY
 
 
 class FasttextRepresentation(BaseRepresentation):
@@ -14,9 +14,13 @@ class FasttextRepresentation(BaseRepresentation):
     _MODEL_PATH = '../models'
     _MODEL_FILE = 'fasttext.model'
 
-    def __init__(self, data, train: bool = True, min_count: int = 4):
-        super().__init__(data)
-
+    def __init__(
+            self, data,
+            train: bool = True,
+            min_count: int = 4,
+            tokens_key: str = TOKENS_KEY
+    ):
+        super().__init__(data, tokens_key)
         path = os.path.join(self._MODEL_PATH, self._MODEL_FILE)
         if not (train or os.path.exists(path)):
             raise ValueError
@@ -35,7 +39,7 @@ class FasttextRepresentation(BaseRepresentation):
         ) if train else FastText.load(path)
 
     def _train(self):
-        tokens = [get_doc_words(doc) for doc in self.data]
+        tokens = [get_doc_words(doc, key=self.tokens_key) for doc in self.data]
         self.fasttext.build_vocab(tokens)
         self.fasttext.train(
             tokens,
@@ -52,7 +56,7 @@ class FasttextRepresentation(BaseRepresentation):
     def _get_doc_embedding_avg(self):
         docs_avg = dict()
         for index, doc in tqdm(enumerate(self.data)):
-            words = get_doc_words(doc)
+            words = get_doc_words(doc, key=self.tokens_key)
             docs_avg[index] = np.mean([
                 self.fasttext.wv[word] for word in words if re.fullmatch('\\w+', word)
             ], axis=0)

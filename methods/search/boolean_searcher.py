@@ -6,7 +6,7 @@ from itertools import chain
 from random import shuffle
 
 from methods.search.base import BaseSearcher
-from methods.search.utils import create_boolean_matrix
+from methods.search.utils import create_boolean_matrix, TOKENS_KEY
 
 NOT = 'not'
 AND = 'and'
@@ -18,8 +18,8 @@ class BooleanSearcher(BaseSearcher):
     _MATRIX_NAME = 'matrix.npz'
     _HEADER_NAME = 'header.json'
 
-    def __init__(self, data, build: bool = True):
-        super().__init__(data)
+    def __init__(self, data, build: bool = True, tokens_key: str = TOKENS_KEY):
+        super().__init__(data, tokens_key)
 
         matrix_path = os.path.join(self._MATRIX_PATH, self._MATRIX_NAME)
         header_path = os.path.join(self._MATRIX_PATH, self._HEADER_NAME)
@@ -34,7 +34,7 @@ class BooleanSearcher(BaseSearcher):
 
     def _get_matrix(self, build, matrix_path, header_path):
         return create_boolean_matrix(
-            self.data, matrix_path, header_path
+            self.data, matrix_path, header_path, self.tokens_key
         ) if build else (np.load(matrix_path)['matrix'], json.load(open(header_path, 'r')))
 
     @property

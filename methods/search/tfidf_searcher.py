@@ -1,15 +1,14 @@
 import re
 import numpy as np
 from itertools import chain
-from methods import TFIDFRepresentation, cosine_sim
+from methods import TFIDFRepresentation, cosine_sim, TOKENS_KEY
 from methods.search.base import BaseSearcher
-from preprocess import PreProcessor
 
 
 class TFIDFSearcher(BaseSearcher):
-    def __init__(self, data):
-        super().__init__(data)
-        self.representation = TFIDFRepresentation(data)
+    def __init__(self, data, tokens_key: str = TOKENS_KEY):
+        super().__init__(data, tokens_key)
+        self.representation = TFIDFRepresentation(data, tokens_key=tokens_key)
 
     def process_query(self, query):
         query = re.sub('\\W+', ' ', query).strip()
