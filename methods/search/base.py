@@ -17,8 +17,8 @@ class BaseSearcher(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _search(self) -> List:
+    def _search(self, query, k) -> List:
         raise NotImplementedError
 
     def search(self, query, k):
-        return DataOut(self._search())
+        return DataOut(self._search(query, k))
