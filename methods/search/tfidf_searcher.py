@@ -2,13 +2,13 @@ import re
 import numpy as np
 from itertools import chain
 from methods import TFIDFRepresentation, cosine_sim
+from methods.search.base import BaseSearcher
 from preprocess import PreProcessor
 
 
-class TFIDFSearcher:
+class TFIDFSearcher(BaseSearcher):
     def __init__(self, data):
-        self.data = data
-        self.pre_processor = PreProcessor()
+        super().__init__(data)
         self.representation = TFIDFRepresentation(data)
 
     def process_query(self, query):
