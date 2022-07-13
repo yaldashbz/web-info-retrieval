@@ -13,8 +13,8 @@ class BaseSearcher(ABC):
 
     @abstractmethod
     def process_query(self, query):
-        raise NotImplementedError
+        pass
 
     @abstractmethod
     def search(self, query, k) -> List:
-        raise NotImplementedError
+        pass
