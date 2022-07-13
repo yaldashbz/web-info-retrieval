@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from data_collection.utils import TOKENS_KEY
-from methods.search.utils import DataOut
 from preprocess import PreProcessor
 
 
@@ -17,8 +16,5 @@ class BaseSearcher(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _search(self, query, k) -> List:
+    def search(self, query, k) -> List:
         raise NotImplementedError
-
-    def search(self, query, k):
-        return DataOut(self._search(query, k))

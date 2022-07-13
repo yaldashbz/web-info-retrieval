@@ -1,7 +1,10 @@
 import re
+from typing import Optional
+
 import numpy as np
 from itertools import chain
 
+from methods.search import DataOut
 from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
 from methods.representation import TFIDFRepresentation
@@ -17,14 +20,14 @@ class TFIDFSearcher(BaseSearcher):
         query = re.sub('\\W+', ' ', query).strip()
         return self.pre_processor.process(query)
 
-    def _search(self, query, k):
+    def search(self, query, k) -> Optional[DataOut, None]:
         scores = list()
         tokens = self.process_query(query)
         query_vector = self._get_query_vector(tokens)
         for doc in self.representation.matrix.A:
             scores.append(cosine_sim(query_vector, doc))
 
-        return self._get_results(scores, k)
+        return DataOut(self._get_results(scores, k))
 
     def _get_results(self, scores, k):
         out = np.array(scores).argsort()[-k:][::-1]

@@ -1,6 +1,9 @@
 import itertools
+from typing import Optional
+
 import numpy as np
 
+from methods.search import DataOut
 from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
 from methods.representation import BertRepresentation
@@ -18,13 +21,13 @@ class TransformerSearcher(BaseSearcher):
         query = ' '.join(tokens)
         return [query]
 
-    def _search(self, query, k):
+    def search(self, query, k) -> Optional[DataOut, None]:
         query = self.process_query(query)
         query_embedding = self.representation.model.encode(
             query, show_progress_bar=True, normalize_embeddings=True
         )
         similarities = self._get_similarities(query_embedding, k)
-        return [dict(url=url, score=score) for url, score in similarities]
+        return DataOut([dict(url=url, score=score) for url, score in similarities])
 
     def _get_similarities(self, query_embedding, k):
         similarities = dict()

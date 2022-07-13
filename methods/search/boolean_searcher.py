@@ -1,13 +1,15 @@
 import json
 import os
 import re
+from typing import Optional
+
 import numpy as np
 from itertools import chain
 from random import shuffle
 
 from data_collection.utils import TOKENS_KEY
 from methods.search.base import BaseSearcher
-from methods.search.utils import create_boolean_matrix
+from methods.search.utils import create_boolean_matrix, DataOut
 
 NOT = 'not'
 AND = 'and'
@@ -103,7 +105,7 @@ class BooleanSearcher(BaseSearcher):
 
         return words, operators
 
-    def _search(self, query, k):
+    def search(self, query, k) -> Optional[DataOut, None]:
         words, operators = self.process_query(query)
         assert len(words) == len(operators) + 1
         n = len(words)
@@ -120,7 +122,7 @@ class BooleanSearcher(BaseSearcher):
             op2 = self._get_column(token)
             result = self._operate(result, op2, operators[i + 1])
 
-        return self._get_results(result, k)
+        return DataOut(self._get_results(result, k))
 
     def _get_results_urls(self, indexes):
         result_urls = list()

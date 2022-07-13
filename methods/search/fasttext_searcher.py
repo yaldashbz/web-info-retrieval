@@ -1,6 +1,9 @@
 import itertools
+from typing import Optional
+
 import numpy as np
 
+from methods import DataOut
 from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
 from methods.representation import FasttextRepresentation
@@ -21,11 +24,11 @@ class FasttextSearcher(BaseSearcher):
         tokens = self.pre_processor.process(query)
         return list(itertools.chain(*tokens))
 
-    def _search(self, query, k):
+    def search(self, query, k) -> Optional[DataOut, None]:
         tokens = self.process_query(query)
         query_embedding_avg = self._get_query_embedding_avg(tokens)
         similarities = self._get_similarities(query_embedding_avg, k)
-        return self._get_result(similarities)
+        return DataOut(self._get_result(similarities))
 
     def _get_similarities(self, query_embedding, k):
         similarities = dict()
