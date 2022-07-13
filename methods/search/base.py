@@ -9,7 +9,7 @@ from preprocess import PreProcessor
 class BaseSearcher(ABC):
     def __init__(self, data, tokens_key: str = TOKENS_KEY):
         assert len(data) > 0
-        assert tokens_key in self.data[0].keys()
+        assert tokens_key in data[0].keys()
 
         self.data = data
         self.tokens_key = tokens_key
