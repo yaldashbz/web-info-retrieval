@@ -20,7 +20,7 @@ class TFIDFSearcher(BaseSearcher):
         query = re.sub('\\W+', ' ', query).strip()
         return self.pre_processor.process(query)
 
-    def search(self, query, k) -> Optional[DataOut, None]:
+    def search(self, query, k: int = 10) -> Optional[DataOut]:
         scores = list()
         tokens = self.process_query(query)
         query_vector = self._get_query_vector(tokens)

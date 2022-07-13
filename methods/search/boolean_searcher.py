@@ -105,14 +105,14 @@ class BooleanSearcher(BaseSearcher):
 
         return words, operators
 
-    def search(self, query, k) -> Optional[DataOut, None]:
+    def search(self, query, k: int = 10) -> Optional[DataOut]:
         words, operators = self.process_query(query)
         assert len(words) == len(operators) + 1
         n = len(words)
         if n == 0:
             return None
         if n < 2:
-            return self._get_results(self._get_column(words[0]), k)
+            return DataOut(self._get_results(self._get_column(words[0]), k))
 
         op1, op2 = self._get_column(words[0]), self._get_column(words[1])
         operator = operators[0]

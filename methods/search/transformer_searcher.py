@@ -21,7 +21,7 @@ class TransformerSearcher(BaseSearcher):
         query = ' '.join(tokens)
         return [query]
 
-    def search(self, query, k) -> Optional[DataOut, None]:
+    def search(self, query, k: int = 10) -> Optional[DataOut]:
         query = self.process_query(query)
         query_embedding = self.representation.model.encode(
             query, show_progress_bar=True, normalize_embeddings=True

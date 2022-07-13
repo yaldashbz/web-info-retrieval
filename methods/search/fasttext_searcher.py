@@ -24,7 +24,7 @@ class FasttextSearcher(BaseSearcher):
         tokens = self.pre_processor.process(query)
         return list(itertools.chain(*tokens))
 
-    def search(self, query, k) -> Optional[DataOut, None]:
+    def search(self, query, k: int = 10) -> Optional[DataOut]:
         tokens = self.process_query(query)
         query_embedding_avg = self._get_query_embedding_avg(tokens)
         similarities = self._get_similarities(query_embedding_avg, k)
