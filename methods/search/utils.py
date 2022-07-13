@@ -1,8 +1,8 @@
 import json
-
 import numpy as np
-from tqdm import tqdm
+import pandas as pd
 
+from tqdm import tqdm
 from data_collection.utils import get_doc_words
 
 
@@ -35,3 +35,8 @@ def create_boolean_matrix(data, matrix_path: str, header_path: str, tokens_key: 
     np.savez_compressed(matrix_path, matrix=matrix)
 
     return matrix, header
+
+
+class DataOut(list):
+    def to_df(self):
+        return pd.DataFrame(self)

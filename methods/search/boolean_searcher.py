@@ -103,7 +103,7 @@ class BooleanSearcher(BaseSearcher):
 
         return words, operators
 
-    def search(self, query, k):
+    def _search(self, query, k):
         words, operators = self.process_query(query)
         assert len(words) == len(operators) + 1
         n = len(words)
