@@ -1,9 +1,9 @@
 import itertools
 from typing import Optional
 
+import faiss
 import numpy as np
 
-from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
 from methods.search.utils import DataOut
 from methods.representation import BertRepresentation
@@ -11,9 +11,21 @@ from data_collection.utils import TOKENS_KEY
 
 
 class TransformerSearcher(BaseSearcher):
-    def __init__(self, data, load: bool = False, tokens_key: str = TOKENS_KEY):
+    def __init__(
+            self, data,
+            load: bool = False,
+            tokens_key: str = TOKENS_KEY
+    ):
         super().__init__(data, tokens_key)
-        self.representation = BertRepresentation(data=data, load=load, tokens_key=tokens_key)
+        self.representation = BertRepresentation(
+            data=data, load=load, tokens_key=tokens_key
+        )
+        self.index = self._get_index(self.representation.embeddings)
+
+    def _get_index(self, embeddings):
+        index = faiss.IndexIDMap(faiss.IndexFlatL2(embeddings.shape[1]))
+        index.add_with_ids(embeddings, np.array(range(len(self.data))))
+        return index
 
     def process_query(self, query):
         tokens = self.pre_processor.process(query)
@@ -23,17 +35,16 @@ class TransformerSearcher(BaseSearcher):
 
     def search(self, query, k: int = 10) -> Optional[DataOut]:
         query = self.process_query(query)
-        query_embedding = self.representation.model.encode(
+        vector = self.representation.model.encode(
             query, show_progress_bar=True, normalize_embeddings=True
         )
-        similarities = self._get_similarities(query_embedding, k)
-        return DataOut([dict(url=url, score=score) for url, score in similarities])
+        distances, indexes = self.index.search(np.array(vector).astype('float32'), k=k)
+        return DataOut(self._get_results(distances, indexes))
 
-    def _get_similarities(self, query_embedding, k):
-        similarities = dict()
-        for url, embedding in self.representation.embeddings.items():
-            similarities[url] = cosine_sim(
-                np.mean(embedding, axis=0).reshape(1, 768),
-                query_embedding.reshape(768, 1)
-            )
-        return sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:k]
+    def _get_results(self, distances, indexes):
+        indexes = indexes.flatten().tolist()
+        distances = distances.flatten().tolist()
+        return [dict(
+            url=self.data[index]['url'],
+            distance=distances[i]
+        ) for i, index in enumerate(indexes)]

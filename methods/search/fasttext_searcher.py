@@ -11,7 +11,12 @@ from data_collection.utils import TOKENS_KEY
 
 
 class FasttextSearcher(BaseSearcher):
-    def __init__(self, data, train: bool = True, min_count: int = 1, tokens_key: str = TOKENS_KEY):
+    def __init__(
+            self, data,
+            train: bool = True,
+            min_count: int = 1,
+            tokens_key: str = TOKENS_KEY
+    ):
         super().__init__(data, tokens_key)
         self.representation = FasttextRepresentation(
             data, train=train, min_count=min_count, tokens_key=tokens_key

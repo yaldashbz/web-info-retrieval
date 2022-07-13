@@ -38,7 +38,10 @@ class BooleanSearcher(BaseSearcher):
     def _get_matrix(self, build, matrix_path, header_path):
         return create_boolean_matrix(
             self.data, matrix_path, header_path, self.tokens_key
-        ) if build else (np.load(matrix_path)['matrix'], json.load(open(header_path, 'r')))
+        ) if build else (
+            np.load(matrix_path)['matrix'],
+            json.load(open(header_path, 'r'))
+        )
 
     @property
     def _all_words(self):
