@@ -2,10 +2,10 @@ import re
 import numpy as np
 from itertools import chain
 
-from data_collection.utils import TOKENS_KEY
 from methods.utils import cosine_sim
-from methods.representation import TFIDFRepresentation
 from methods.search.base import BaseSearcher
+from methods.representation import TFIDFRepresentation
+from data_collection.utils import TOKENS_KEY
 
 
 class TFIDFSearcher(BaseSearcher):

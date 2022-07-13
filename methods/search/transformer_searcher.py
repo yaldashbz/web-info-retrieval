@@ -1,8 +1,10 @@
 import itertools
 import numpy as np
 
-from methods import BertRepresentation, cosine_sim, TOKENS_KEY
+from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
+from methods.representation import BertRepresentation
+from data_collection.utils import TOKENS_KEY
 
 
 class TransformerSearcher(BaseSearcher):

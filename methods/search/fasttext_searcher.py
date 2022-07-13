@@ -1,9 +1,10 @@
 import itertools
 import numpy as np
 
-from data_collection.utils import TOKENS_KEY
-from methods import cosine_sim, FasttextRepresentation
+from methods.utils import cosine_sim
 from methods.search.base import BaseSearcher
+from methods.representation import FasttextRepresentation
+from data_collection.utils import TOKENS_KEY
 
 
 class FasttextSearcher(BaseSearcher):
