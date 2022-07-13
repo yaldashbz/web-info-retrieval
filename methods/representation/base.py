@@ -2,7 +2,7 @@ import pandas as pd
 from typing import List
 from abc import abstractmethod, ABC
 
-from methods.search import TOKENS_KEY
+from data_collection.utils import TOKENS_KEY
 
 
 class BaseRepresentation(ABC):

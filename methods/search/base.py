@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from methods.search import TOKENS_KEY
+from data_collection.utils import TOKENS_KEY
 from preprocess import PreProcessor
 
 

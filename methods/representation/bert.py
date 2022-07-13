@@ -4,9 +4,8 @@ import pandas as pd
 from typing import List
 from sentence_transformers import SentenceTransformer
 
-from data_collection.utils import get_contents
+from data_collection.utils import get_contents, TOKENS_KEY
 from methods.representation.base import BaseRepresentation
-from methods.search import TOKENS_KEY
 
 
 class BertRepresentation(BaseRepresentation):

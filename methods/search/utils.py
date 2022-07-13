@@ -5,8 +5,6 @@ from tqdm import tqdm
 
 from data_collection.utils import get_doc_words
 
-TOKENS_KEY = 'cleaned_tokens'
-
 
 def get_dict(big_list):
     return {word: i for i, word in enumerate(big_list)}

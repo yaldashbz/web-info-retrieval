@@ -1,7 +1,10 @@
 import re
 import numpy as np
 from itertools import chain
-from methods import TFIDFRepresentation, cosine_sim, TOKENS_KEY
+
+from data_collection.utils import TOKENS_KEY
+from methods.utils import cosine_sim
+from methods.representation import TFIDFRepresentation
 from methods.search.base import BaseSearcher
 
 

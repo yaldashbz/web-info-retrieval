@@ -5,8 +5,9 @@ import numpy as np
 from itertools import chain
 from random import shuffle
 
+from data_collection.utils import TOKENS_KEY
 from methods.search.base import BaseSearcher
-from methods.search.utils import create_boolean_matrix, TOKENS_KEY
+from methods.search.utils import create_boolean_matrix
 
 NOT = 'not'
 AND = 'and'

@@ -3,8 +3,7 @@ import pandas as pd
 from typing import List
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from data_collection.utils import get_contents
-from methods import TOKENS_KEY
+from data_collection.utils import get_contents, TOKENS_KEY
 from methods.representation.base import BaseRepresentation
 
 

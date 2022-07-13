@@ -1,4 +1,3 @@
-from .utils import *
+from .search import *
 from .cluster import *
 from .link_analyser import *
-from .representation import *

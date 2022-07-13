@@ -3,7 +3,7 @@ from typing import List, Tuple, Dict
 from nltk import FreqDist
 
 DIVIDER = ' '
-
+TOKENS_KEY = 'cleaned_tokens'
 CATEGORIES = [
     'religion',
     'sports', 'drink',
