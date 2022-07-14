@@ -28,6 +28,11 @@ class _BaseGraphBuilder:
         return [list(chain(*data[i:i + num]))
                 for i in range(0, len(data), num)]
 
+    def show(self, **kwargs):
+        pos = nx.spiral_layout(self.graph)
+        nx.draw(self.graph, pos, with_labels=True, **kwargs)
+        plt.show()
+
 
 class GraphBuilder(_BaseGraphBuilder):
 
@@ -72,11 +77,6 @@ class GraphBuilder(_BaseGraphBuilder):
         self.graph.add_nodes_from(nodes)
         self.graph.add_weighted_edges_from(edges)
         return self.graph
-
-    def show(self, **kwargs):
-        pos = nx.spiral_layout(self.graph)
-        nx.draw(self.graph, pos, with_labels=True, **kwargs)
-        plt.show()
 
 
 class TFIDFGraphBuilder(_BaseGraphBuilder):

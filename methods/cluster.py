@@ -57,6 +57,7 @@ class ContentKMeanCluster:
         score = silhouette_score(df, labels)
         if plot:
             plot_silhouette(df, k, labels, score)
+        return score
 
     def rss_evaluate(self):
         return self.k_means.inertia_
