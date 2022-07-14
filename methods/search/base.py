@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Optional
 
 from data_collection.utils import TOKENS_KEY
-from methods import DataOut
+from methods.search.utils import DataOut
 from preprocess import PreProcessor
 
 

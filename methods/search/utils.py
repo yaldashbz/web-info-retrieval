@@ -6,6 +6,11 @@ from tqdm import tqdm
 from data_collection.utils import get_doc_words
 
 
+class DataOut(list):
+    def to_df(self):
+        return pd.DataFrame(self)
+
+
 def get_dict(big_list):
     return {word: i for i, word in enumerate(big_list)}
 
@@ -35,8 +40,3 @@ def create_boolean_matrix(data, matrix_path: str, header_path: str, tokens_key: 
     np.savez_compressed(matrix_path, matrix=matrix)
 
     return matrix, header
-
-
-class DataOut(list):
-    def to_df(self):
-        return pd.DataFrame(self)

@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -39,3 +41,7 @@ def cosine_sim(a, b):
 
 def get_docs_with_urls(data, urls):
     return [doc for doc in data if doc['url'] in urls]
+
+
+def count_same_words(first: List[str], second: List[str]):
+    return len(set(first).intersection(set(second)))
