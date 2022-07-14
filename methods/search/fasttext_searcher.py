@@ -14,16 +14,19 @@ class FasttextSearcher(BaseSearcher):
     def __init__(
             self, data,
             train: bool = True,
+            load: bool = False,
             min_count: int = 1,
             tokens_key: str = TOKENS_KEY
     ):
         super().__init__(data, tokens_key)
         self.representation = FasttextRepresentation(
-            data, train=train, min_count=min_count, tokens_key=tokens_key
+            data, train=train, load=load, min_count=min_count, tokens_key=tokens_key
         )
 
     def _get_query_embedding_avg(self, tokens):
-        return np.mean([self.representation.fasttext.wv[token] for token in tokens], axis=0)
+        return np.mean([
+            self.representation.fasttext.wv[token] for token in tokens
+        ], axis=0)
 
     def process_query(self, query):
         tokens = self.pre_processor.process(query)

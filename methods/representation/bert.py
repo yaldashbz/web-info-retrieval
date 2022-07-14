@@ -29,7 +29,7 @@ class BertRepresentation(BaseRepresentation):
             self._save_embeddings()
         else:
             self.df = self._load_embeddings()
-        self.embeddings = np.array(self.df.values.tolist()).astype('float32')
+        self.embeddings = np.asarray(self.df.values.tolist()).astype('float32')
 
     def _load_embeddings(self):
         return pd.read_json(os.path.join(self._PATH, self._FILE))
