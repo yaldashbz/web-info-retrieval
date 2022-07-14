@@ -54,7 +54,7 @@ class WikiScraper(BaseWebScraper):
             try:
                 page = wikipedia.page(title)
                 links += page.links
-                base_data.append(Document(url=page.url, content=page.content))
+                base_data.append(Document(url=page.url, content=page.content, category=title))
             except WikipediaException:
                 continue
         return set(links), base_data
@@ -65,7 +65,8 @@ class WikiScraper(BaseWebScraper):
         for title in tqdm(titles):
             try:
                 page = wikipedia.page(title)
-                data.append(Document(url=page.url, content=page.content))
+                data.append(
+                    Document(url=page.url, content=page.content, category=title))
             except WikipediaException:
                 continue
         return data

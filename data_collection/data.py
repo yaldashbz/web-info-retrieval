@@ -12,21 +12,28 @@ class Document:
     tokens: List[List[str]]
     keywords: List[Tuple]
     content: str
+    category: str
 
-    def __init__(self, url, content):
+    def __init__(self, url, content, category):
         self.url = url
         self.content = content
         preprocessor = PreProcessor()
         self.tokens = preprocessor.tokenize(content)
         keyword_tokens = preprocessor.normalize(self.tokens, stopwords_removal=True)
         self.keywords = get_keywords(keyword_tokens)
+        self.category = category
 
     def __hash__(self):
         return hash(f'{self.url} - {self.content}')
 
     @classmethod
     def _convert(cls, data: List) -> List:
-        return [{'url': doc.url, 'tokens': doc.tokens, 'keywords': doc.keywords} for doc in data]
+        return [{
+            'url': doc.url,
+            'tokens': doc.tokens,
+            'keywords': doc.keywords,
+            'category': doc.category
+        } for doc in data]
 
     @classmethod
     def _cleanup(cls, data: List) -> List:

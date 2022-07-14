@@ -71,7 +71,8 @@ class GoogleScraper(BaseWebScraper):
                         continue
                     result.add(Document(**{
                         'url': url,
-                        'content': content
+                        'content': content,
+                        'category': query
                     }))
                 except Exception as e:
                     print(e)

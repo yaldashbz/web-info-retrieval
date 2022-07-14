@@ -40,7 +40,7 @@ class FasttextRepresentation(BaseRepresentation):
         return FastText(
             sg=1, window=10, min_count=min_count,
             negative=15, min_n=2, max_n=5
-        ) if load else FastText.load(path)
+        ) if not load else FastText.load(path)
 
     def _train(self):
         tokens = [get_doc_words(doc, key=self.tokens_key) for doc in self.data]
