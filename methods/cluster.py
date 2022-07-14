@@ -6,8 +6,8 @@ from sklearn.metrics import silhouette_score
 from yellowbrick.cluster import KElbowVisualizer
 
 from data_collection.utils import get_content
-from methods.utils import plot_silhouette
 from methods.representation import TFIDFRepresentation, BertRepresentation, FasttextRepresentation
+from methods.utils import plot_silhouette
 
 _representations = {
     'tf-idf': TFIDFRepresentation,

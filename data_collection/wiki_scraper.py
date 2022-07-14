@@ -4,8 +4,8 @@ import wikipedia
 from tqdm import tqdm
 from wikipedia import WikipediaException
 
-from data_collection.data import Document
 from data_collection.base_scraper import BaseWebScraper
+from data_collection.data import Document
 from data_collection.utils import CATEGORIES
 
 wikipedia.set_lang('en')

@@ -1,15 +1,14 @@
-import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
 from itertools import chain
 from typing import List
 
+import matplotlib.pyplot as plt
+import networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
 from data_collection.utils import get_sentences
-from methods.linking.utils import count_same_words
+from methods.utils import count_same_words
 
 
 class _BaseGraphBuilder:
@@ -21,7 +20,7 @@ class _BaseGraphBuilder:
     ):
         self.graph = nx.Graph()
         self.sent_num = sent_num
-        self.min_similar = max(0, min_similar)
+        self.min_similar = max(.0, min_similar)
         self.paragraphs = self._get_paragraphs(dataset)
 
     def _get_paragraphs(self, data):

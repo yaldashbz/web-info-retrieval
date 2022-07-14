@@ -1,6 +1,7 @@
-import pandas as pd
-from typing import List
 from abc import abstractmethod, ABC
+from typing import List
+
+import pandas as pd
 
 from data_collection.utils import TOKENS_KEY
 

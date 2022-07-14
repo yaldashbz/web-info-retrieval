@@ -1,11 +1,11 @@
 import json
 import os
 import re
+from itertools import chain
+from random import shuffle
 from typing import Optional
 
 import numpy as np
-from itertools import chain
-from random import shuffle
 
 from data_collection.utils import TOKENS_KEY
 from methods.search.base import BaseSearcher

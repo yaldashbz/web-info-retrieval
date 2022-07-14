@@ -1,9 +1,10 @@
-import re
 import os
+import re
+
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from gensim.models.fasttext import FastText
+from tqdm import tqdm
 
 from data_collection.utils import get_doc_words, TOKENS_KEY
 from methods.representation import BaseRepresentation

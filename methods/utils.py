@@ -1,8 +1,8 @@
 from typing import List
 
-import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import silhouette_samples
 
 

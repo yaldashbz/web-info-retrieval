@@ -1,5 +1,6 @@
 from itertools import chain
 from typing import List, Tuple, Dict
+
 from nltk import FreqDist
 
 DIVIDER = ' '

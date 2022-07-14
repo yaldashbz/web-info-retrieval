@@ -1,5 +1,6 @@
-import pandas as pd
 from typing import List
+
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from data_collection.utils import get_contents, TOKENS_KEY

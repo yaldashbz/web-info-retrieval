@@ -1,8 +1,9 @@
 import json
+
 import numpy as np
 import pandas as pd
-
 from tqdm import tqdm
+
 from data_collection.utils import get_doc_words
 
 

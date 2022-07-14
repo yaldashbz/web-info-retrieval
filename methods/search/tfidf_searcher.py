@@ -1,14 +1,14 @@
 import re
+from itertools import chain
 from typing import Optional
 
 import numpy as np
-from itertools import chain
 
-from methods.utils import cosine_sim
+from data_collection.utils import TOKENS_KEY
+from methods.representation import TFIDFRepresentation
 from methods.search.base import BaseSearcher
 from methods.search.utils import DataOut
-from methods.representation import TFIDFRepresentation
-from data_collection.utils import TOKENS_KEY
+from methods.utils import cosine_sim
 
 
 class TFIDFSearcher(BaseSearcher):

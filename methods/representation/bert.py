@@ -1,7 +1,8 @@
 import os
-import torch
-import pandas as pd
 from typing import List
+
+import pandas as pd
+import torch
 from sentence_transformers import SentenceTransformer
 
 from data_collection.utils import get_contents, TOKENS_KEY

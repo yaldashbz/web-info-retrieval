@@ -4,10 +4,10 @@ from typing import Optional
 import faiss
 import numpy as np
 
+from data_collection.utils import TOKENS_KEY
+from methods.representation import BertRepresentation
 from methods.search.base import BaseSearcher
 from methods.search.utils import DataOut
-from methods.representation import BertRepresentation
-from data_collection.utils import TOKENS_KEY
 
 
 class TransformerSearcher(BaseSearcher):
