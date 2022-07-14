@@ -18,26 +18,29 @@ class FasttextRepresentation(BaseRepresentation):
     def __init__(
             self, data,
             train: bool = True,
+            load: bool = False,
             min_count: int = 4,
             tokens_key: str = TOKENS_KEY
     ):
+        assert load != train
+
         super().__init__(data, tokens_key)
         path = os.path.join(self._MODEL_PATH, self._MODEL_FILE)
         if not (train or os.path.exists(path)):
             raise ValueError
 
-        self.fasttext = self._get_fasttext(train, min_count, path)
-        if train:
+        self.fasttext = self._get_fasttext(min_count, path, load)
+        if train and not load:
             self._train()
             self._save_model()
         self.doc_embedding_avg = self._get_doc_embedding_avg()
 
     @classmethod
-    def _get_fasttext(cls, train: bool, min_count: int, path: str):
+    def _get_fasttext(cls, min_count: int, path: str, load: bool):
         return FastText(
             sg=1, window=10, min_count=min_count,
             negative=15, min_n=2, max_n=5
-        ) if train else FastText.load(path)
+        ) if load else FastText.load(path)
 
     def _train(self):
         tokens = [get_doc_words(doc, key=self.tokens_key) for doc in self.data]

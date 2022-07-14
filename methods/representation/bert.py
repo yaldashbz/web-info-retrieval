@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+import numpy as np
 import pandas as pd
 import torch
 from sentence_transformers import SentenceTransformer
@@ -28,7 +29,7 @@ class BertRepresentation(BaseRepresentation):
             self._save_embeddings()
         else:
             self.df = self._load_embeddings()
-        self.embeddings = self.df.values.tolist()
+        self.embeddings = np.array(self.df.values.tolist())
 
     def _load_embeddings(self):
         return pd.read_json(os.path.join(self._PATH, self._FILE))
