@@ -1,4 +1,4 @@
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Optional
 
 import wikipedia
 from tqdm import tqdm
@@ -36,6 +36,12 @@ class WikiScraper(BaseWebScraper):
         return list(set(base_data).union(linked_data))
 
     @classmethod
+    def _get_category(cls, title: str) -> Optional[str]:
+        for category in CATEGORIES:
+            if title.lower() in category.lower() or category.lower() in title.lower():
+                return category
+
+    @classmethod
     def _get_titles(cls, titles, subjects, max_depth) -> Set[str]:
         if max_depth == 0:
             return set(titles)
@@ -54,7 +60,8 @@ class WikiScraper(BaseWebScraper):
             try:
                 page = wikipedia.page(title)
                 links += page.links
-                base_data.append(Document(url=page.url, content=page.content, category=title))
+                base_data.append(
+                    Document(url=page.url, content=page.content, category=cls._get_category(title)))
             except WikipediaException:
                 continue
         return set(links), base_data
@@ -66,7 +73,7 @@ class WikiScraper(BaseWebScraper):
             try:
                 page = wikipedia.page(title)
                 data.append(
-                    Document(url=page.url, content=page.content, category=title))
+                    Document(url=page.url, content=page.content, category=cls._get_category(title)))
             except WikipediaException:
                 continue
         return data
