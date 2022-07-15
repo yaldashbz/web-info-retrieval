@@ -35,7 +35,7 @@ class _BaseClassifier:
         self.y_predicted = None
 
     def _getXy(self):
-        X = self.representation.df.values()
+        X = self.representation.represent().values
         y = np.array([
             doc['category'] if doc['category'] else 'others'
             for doc in self.data
