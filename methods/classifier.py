@@ -33,6 +33,7 @@ class _BaseClassifier:
             random_state=split_random_state
         )
         self.y_predicted = None
+        self.classifier = None
 
     def _getXy(self):
         X = self.representation.represent().values
@@ -43,18 +44,21 @@ class _BaseClassifier:
         return X, y
 
     def f1_score(self):
-        f1_score(self.y_test, self.y_predicted, average='macro')
+        return f1_score(self.y_test, self.y_predicted, average='macro')
+
+    def accuracy(self):
+        return self.classifier.score(self.X, self.y)
 
 
 class LogisticRegressionClassifier(_BaseClassifier):
-    def __call__(self, random_state: float = 0):
-        classifier = LogisticRegression(random_state=random_state).fit(
+    def classify(self, random_state: float = 0):
+        self.classifier = LogisticRegression(random_state=random_state).fit(
             self.X_train, self.y_train
         )
-        self.y_predicted = classifier.predict(self.X_test)
-        return classifier
+        self.y_predicted = self.classifier.predict(self.X_test)
+        return self.classifier
 
 
-class TransformerClassifier(_BaseClassifier):
+class TransformerClassifierBuilder(_BaseClassifier):
     def classify(self):
         pass
