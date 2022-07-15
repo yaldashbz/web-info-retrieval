@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
 
 from methods import (
     TFIDFRepresentation,
@@ -55,6 +56,14 @@ class LogisticRegressionClassifier(_BaseClassifier):
         self.classifier = LogisticRegression(random_state=random_state).fit(
             self.X_train, self.y_train
         )
+        self.y_predicted = self.classifier.predict(self.X_test)
+        return self.classifier
+
+
+class NaiveBayesClassifier(_BaseClassifier):
+    def classify(self):
+        self.classifier = GaussianNB()
+        self.classifier.fit(self.X_train, self.y_train)
         self.y_predicted = self.classifier.predict(self.X_test)
         return self.classifier
 
