@@ -31,7 +31,7 @@ class FasttextRepresentation(BaseRepresentation):
             raise ValueError
 
         self.fasttext = self._get_fasttext(min_count, path, load)
-        if train and not load:
+        if data and train and not load:
             self._train()
             self._save_model()
         self.doc_embedding_avg = self._get_doc_embedding_avg()

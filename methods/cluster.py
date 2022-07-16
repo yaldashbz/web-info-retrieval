@@ -23,15 +23,12 @@ class ContentKMeanCluster:
     _MODEL = 'kmeans.pkl'
     _RESULT = 'result.json'
 
-    def __init__(self, data, method: str = 'tf-idf', load: bool = True, **repr_kwargs):
-        if not os.path.exists(self._PATH):
-            os.mkdir(self._PATH)
-
+    def __init__(self, data, method: str = 'tf-idf', **repr_kwargs):
         self.data = data
         self.representation = _representations[method](data=data, **repr_kwargs)
         self.represented_df = self.representation.represent()
-        self.k_means = None if not load else self.load_model(self.model_path)
-        self.result_df = None if not load else self.load_result(self.result_path)
+        self.k_means = None if data is not None else self.load_model(self.model_path)
+        self.result_df = None if data is not None else self.load_result(self.result_path)
 
     @property
     def model_path(self):
@@ -41,12 +38,13 @@ class ContentKMeanCluster:
     def result_path(self):
         return os.path.join(self._PATH, self._RESULT)
 
-    def run(self, k: int = 2):
+    def run(self, k: int = 2, save: bool = True):
         self.k_means = KMeans(
             n_clusters=k,
             random_state=1
         ).fit(self.represented_df)
-        self.save_model(self.model_path)
+        if save:
+            self.save_model(self.model_path)
         return self.k_means
 
     def save_model(self, path: str):
@@ -77,7 +75,7 @@ class ContentKMeanCluster:
             result[doc_id].update(cluster_id=cluster_id)
         return result
 
-    def analyse(self) -> pd.DataFrame:
+    def analyse(self, save: bool = True) -> pd.DataFrame:
         assert self.k_means
 
         result = self._get_result()
@@ -85,6 +83,8 @@ class ContentKMeanCluster:
         result_df['content'] = result_df['tokens'].apply(get_content)
         result_df.pop('tokens')
         self.result_df = result_df
+        if save:
+            self.save_result(self.result_path)
         return result_df
 
     def elbow_visualize(self, k_range: Tuple[int, int]):

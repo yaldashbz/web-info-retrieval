@@ -18,7 +18,6 @@ class BertRepresentation(BaseRepresentation):
 
     def __init__(self, data, load: bool = False, tokens_key: str = TOKENS_KEY):
         super().__init__(data, tokens_key)
-        contents = self.prepare_data()
 
         if load and not os.path.exists(os.path.join(self._PATH, self._FILE)):
             raise ValueError
@@ -26,7 +25,8 @@ class BertRepresentation(BaseRepresentation):
         self.model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
         self._to_cuda()
 
-        if not load:
+        if not load and data:
+            contents = self.prepare_data()
             self.df = self._get_embeddings(contents)
             self._save_embeddings()
         else:

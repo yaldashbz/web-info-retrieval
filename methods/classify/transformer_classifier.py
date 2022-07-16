@@ -52,7 +52,7 @@ class TransformerClassifier:
         return BertForSequenceClassification.from_pretrained(
             model_name, num_labels=len(self.label2idx)
         ) if load else BertForSequenceClassification.from_pretrained(
-            self._PATH
+            self._PATH, local_files_only=True
         )
 
     def _getXy(self, tokens_key: str):
