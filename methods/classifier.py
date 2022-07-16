@@ -1,9 +1,12 @@
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
+from data_collection import CATEGORIES
+from data_collection.utils import OTHERS
 from methods import (
     TFIDFRepresentation,
     BertRepresentation,
@@ -39,7 +42,7 @@ class _BaseClassifier:
     def _getXy(self):
         X = self.representation.represent().values
         y = np.array([
-            doc['category'] if doc['category'] else 'others'
+            doc['category'] if doc['category'] else OTHERS
             for doc in self.data
         ])
         return X, y
@@ -48,7 +51,12 @@ class _BaseClassifier:
         return f1_score(self.y_test, self.y_predicted, average='macro')
 
     def accuracy(self):
-        return self.classifier.score(self.X, self.y)
+        return accuracy_score(self.y_test, self.y_predicted)
+
+    def confusion_matrix(self, plot: bool = True):
+        if plot:
+            plot_confusion_matrix(self.classifier, self.X_test, self.y_test)
+        return confusion_matrix(self.y_test, self.y_predicted, labels=CATEGORIES + [OTHERS])
 
 
 class LogisticRegressionClassifier(_BaseClassifier):
@@ -68,6 +76,3 @@ class NaiveBayesClassifier(_BaseClassifier):
         return self.classifier
 
 
-class TransformerClassifierBuilder(_BaseClassifier):
-    def classify(self):
-        pass

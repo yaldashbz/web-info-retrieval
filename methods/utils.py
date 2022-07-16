@@ -3,7 +3,22 @@ from typing import List
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 from sklearn.metrics import silhouette_samples
+
+
+class WebDataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+
+    def __len__(self):
+        return len(self.labels)
 
 
 def plot_silhouette(df, n, labels, score):

@@ -15,6 +15,7 @@ CATEGORIES = [
     'football', 'basketball', 'volleyball',
     'university', 'national', 'politics'
 ]
+OTHERS = 'others'
 
 
 def get_keywords(tokens: List[List[str]], count: int = 20) -> List[Tuple]:
