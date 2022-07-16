@@ -4,7 +4,6 @@ from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, con
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-from data_collection import CATEGORIES
 from data_collection.utils import OTHERS
 from methods.representation import (
     TFIDFRepresentation,
@@ -21,21 +20,22 @@ _representations = {
 
 class _BaseClassifier:
     def __init__(
-            self, data,
+            self, data=None,
             method: str = 'tf-idf',
             split_test_size: float = 0.1,
             split_random_state: float = 1,
             **repr_kwargs
     ):
-        self.data = data
-        self.representation = _representations[method](data=data, **repr_kwargs)
-        self.X, self.y = self._getXy()
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            self.X, self.y,
-            test_size=split_test_size,
-            random_state=split_random_state
-        )
-        self.y_predicted = None
+        if data:
+            self.data = data
+            self.representation = _representations[method](data=data, **repr_kwargs)
+            self.X, self.y = self._getXy()
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+                self.X, self.y,
+                test_size=split_test_size,
+                random_state=split_random_state
+            )
+            self.y_predicted = None
         self.classifier = None
 
     def _getXy(self):
