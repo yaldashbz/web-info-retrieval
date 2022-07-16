@@ -6,7 +6,7 @@ from sklearn.naive_bayes import GaussianNB
 
 from data_collection import CATEGORIES
 from data_collection.utils import OTHERS
-from methods import (
+from methods.representation import (
     TFIDFRepresentation,
     BertRepresentation,
     FasttextRepresentation
