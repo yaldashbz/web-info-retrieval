@@ -1,4 +1,3 @@
-import itertools
 from typing import Optional
 
 import faiss
@@ -27,17 +26,8 @@ class TransformerSearcher(BaseSearcher):
         index.add_with_ids(embeddings, np.array(range(len(self.data))))
         return index
 
-    def process_query(self, query):
-        tokens = self.pre_processor.process(query)
-        tokens = itertools.chain(*tokens)
-        query = ' '.join(tokens)
-        return [query]
-
     def search(self, query, k: int = 10) -> Optional[DataOut]:
-        query = self.process_query(query)
-        vector = self.representation.model.encode(
-            query, show_progress_bar=True, normalize_embeddings=True
-        )
+        vector = self.representation.embed(query)
         distances, indexes = self.index.search(np.array(vector).astype('float32'), k=k)
         return DataOut(self._get_results(distances, indexes))
 

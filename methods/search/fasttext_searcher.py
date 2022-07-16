@@ -1,7 +1,4 @@
-import itertools
 from typing import Optional
-
-import numpy as np
 
 from data_collection.utils import TOKENS_KEY
 from methods.representation import FasttextRepresentation
@@ -23,18 +20,8 @@ class FasttextSearcher(BaseSearcher):
             data, train=train, load=load, min_count=min_count, tokens_key=tokens_key
         )
 
-    def _get_query_embedding_avg(self, tokens):
-        return np.mean([
-            self.representation.fasttext.wv[token] for token in tokens
-        ], axis=0)
-
-    def process_query(self, query):
-        tokens = self.pre_processor.process(query)
-        return list(itertools.chain(*tokens))
-
     def search(self, query, k: int = 10) -> Optional[DataOut]:
-        tokens = self.process_query(query)
-        query_embedding_avg = self._get_query_embedding_avg(tokens)
+        query_embedding_avg = self.representation.embed(query)
         similarities = self._get_similarities(query_embedding_avg, k)
         return DataOut(self._get_result(similarities))
 

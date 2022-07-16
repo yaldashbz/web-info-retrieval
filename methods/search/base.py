@@ -16,9 +16,5 @@ class BaseSearcher(ABC):
         self.pre_processor = PreProcessor()
 
     @abstractmethod
-    def process_query(self, query):
-        pass
-
-    @abstractmethod
     def search(self, query, k: int = 10) -> Optional[DataOut]:
         pass

@@ -1,5 +1,6 @@
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, confusion_matrix
 from sklearn.model_selection import train_test_split
+from tqdm import tqdm
 from transformers import (
     TrainingArguments, Trainer, pipeline,
     BertTokenizer, BertForSequenceClassification
@@ -10,8 +11,11 @@ from methods.utils import WebDataset
 
 
 class TransformerClassifier:
+    _PATH = '../models'
+
     def __init__(
             self, data,
+            load: bool = False,
             model_name: str = 'bert-base-cased',
             valtest_size: float = 0.2,
             test_size: float = 0.5,
@@ -19,28 +23,32 @@ class TransformerClassifier:
     ):
         self.data = data
         self.X, self.y, self.label2idx = self._getXy(tokens_key)
-        self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
-            self.X, self.y,
-            test_size=valtest_size, random_state=1
-        )
-        self.X_val, self.X_test, self.y_val, self.y_test = train_test_split(
-            self.X_testval, self.y_testval,
-            test_size=test_size, random_state=1
-        )
-        self.tokenizer = self._get_tokenizer(model_name)
-        self.model = self._get_model(model_name)
-        encodings = self._get_encodings(self.tokenizer)
-        self.datasets = self._get_datasets(*encodings)
+        if not load:
+            self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
+                self.X, self.y,
+                test_size=valtest_size, random_state=1
+            )
+            self.X_val, self.X_test, self.y_val, self.y_test = train_test_split(
+                self.X_testval, self.y_testval,
+                test_size=test_size, random_state=1
+            )
+            self.tokenizer = self._get_tokenizer(model_name)
+            encodings = self._get_encodings(self.tokenizer)
+            self.datasets = self._get_datasets(*encodings)
+            self.y_predicted = None
 
-        self.y_predicted = None
+        self.model = self._get_model(model_name, load)
+        self.generator = None
 
     @classmethod
     def _get_tokenizer(cls, model_name):
         return BertTokenizer.from_pretrained(model_name)
 
-    def _get_model(self, model_name):
+    def _get_model(self, model_name, load: bool):
+        model_name = model_name if not load else self._PATH
+        num_labels = len(self.label2idx) if not load else None
         return BertForSequenceClassification.from_pretrained(
-            model_name, num_labels=len(self.label2idx)
+            model_name, num_labels=num_labels
         )
 
     def _getXy(self, tokens_key: str):
@@ -96,12 +104,32 @@ class TransformerClassifier:
     def train(self):
         self._train(*self.datasets[:2])
 
-    def classify(self):
-        generator = self._get_generator()
-        self.y_predicted = self._predict(generator)
+    def test(self):
+        y_predicted = []
+        for x in tqdm(self.X_test):
+            inp = self.tokenizer(x, truncation=True, padding=True, return_tensors='pt').to('cuda')
+            output = self.model(**inp)
+            y_predicted.append(output[0].softmax(1).argmax().item())
+        self.y_predicted = y_predicted
+
+    def save(self):
+        self.model.save_pretrained(save_directory=self._PATH)
+
+    def classify(self, x):
+        inp = self.tokenizer(
+            x, truncation=True, padding=True, return_tensors='pt').to('cuda')
+        output = self.model(**inp)
+        y_predicted = (output[0].softmax(1).argmax().item())
+        return {v: k for k, v in self.label2idx}[y_predicted]
 
     def f1_score(self):
         return f1_score(self.y_test, self.y_predicted, average='macro')
 
     def accuracy(self):
         return accuracy_score(self.y_test, self.y_predicted)
+
+    def confusion_matrix(self, plot: bool = False):
+        if plot:
+            plot_confusion_matrix(self.generator, self.X_test, self.y_test)
+        return confusion_matrix(
+            self.y_test, self.y_predicted, labels=list(self.label2idx.keys()))

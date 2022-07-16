@@ -1,5 +1,6 @@
 import os
 import re
+from itertools import chain
 
 import numpy as np
 import pandas as pd
@@ -7,7 +8,7 @@ from gensim.models.fasttext import FastText
 from tqdm import tqdm
 
 from data_collection.utils import get_doc_words, TOKENS_KEY
-from methods.representation import BaseRepresentation
+from methods.representation import BaseRepresentation, PreProcessor
 
 
 class FasttextRepresentation(BaseRepresentation):
@@ -71,3 +72,15 @@ class FasttextRepresentation(BaseRepresentation):
             data=self.doc_embedding_avg.values(),
             index=self.doc_embedding_avg.keys()
         )
+
+    @classmethod
+    def process_query(cls, query: str):
+        preprocessor = PreProcessor()
+        tokens = preprocessor.process(query)
+        return list(chain(*tokens))
+
+    def embed(self, query: str):
+        tokens = self.process_query(query)
+        return np.mean([
+            self.fasttext.wv[token] for token in tokens
+        ], axis=0)

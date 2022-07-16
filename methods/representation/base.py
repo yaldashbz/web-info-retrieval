@@ -17,3 +17,10 @@ class BaseRepresentation(ABC):
     @abstractmethod
     def represent(self) -> pd.DataFrame:
         raise NotImplementedError
+
+    @classmethod
+    def process_query(cls, query: str):
+        raise NotImplementedError
+
+    def embed(self, query: str):
+        raise NotImplementedError

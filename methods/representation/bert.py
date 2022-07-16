@@ -1,3 +1,4 @@
+import itertools
 import os
 from typing import List
 
@@ -8,6 +9,7 @@ from sentence_transformers import SentenceTransformer
 
 from data_collection.utils import get_contents, TOKENS_KEY
 from methods.representation.base import BaseRepresentation
+from preprocess import PreProcessor
 
 
 class BertRepresentation(BaseRepresentation):
@@ -44,6 +46,20 @@ class BertRepresentation(BaseRepresentation):
 
     def represent(self) -> pd.DataFrame:
         return self.df
+
+    @classmethod
+    def process_query(cls, query: str):
+        preprocessor = PreProcessor()
+        tokens = preprocessor.process(query)
+        tokens = itertools.chain(*tokens)
+        query = ' '.join(tokens)
+        return [query]
+
+    def embed(self, query: str):
+        query = self.process_query(query)
+        return self.model.encode(
+            query, show_progress_bar=True, normalize_embeddings=True
+        )
 
     def _to_cuda(self):
         if torch.cuda.is_available():

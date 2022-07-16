@@ -57,9 +57,17 @@ class _BaseClassifier:
             plot_confusion_matrix(self.classifier, self.X_test, self.y_test)
         return confusion_matrix(self.y_test, self.y_predicted, labels=CATEGORIES + [OTHERS])
 
+    def build(self):
+        raise NotImplementedError
+
+    def classify(self, query):
+        vector = self.representation.embed(query)
+        y_pred = self.classifier.predict([vector])
+        return y_pred[0]
+
 
 class LogisticRegressionClassifier(_BaseClassifier):
-    def classify(self, random_state: float = 0):
+    def build(self, random_state: float = 0):
         self.classifier = LogisticRegression(
             random_state=random_state,
             max_iter=300
@@ -71,7 +79,7 @@ class LogisticRegressionClassifier(_BaseClassifier):
 
 
 class NaiveBayesClassifier(_BaseClassifier):
-    def classify(self):
+    def build(self):
         self.classifier = GaussianNB()
         self.classifier.fit(self.X_train, self.y_train)
         self.y_predicted = self.classifier.predict(self.X_test)

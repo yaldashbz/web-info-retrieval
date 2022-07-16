@@ -1,5 +1,3 @@
-import re
-from itertools import chain
 from typing import Optional
 
 import numpy as np
@@ -16,16 +14,11 @@ class TFIDFSearcher(BaseSearcher):
         super().__init__(data, tokens_key)
         self.representation = TFIDFRepresentation(data, tokens_key=tokens_key)
 
-    def process_query(self, query):
-        query = re.sub('\\W+', ' ', query).strip()
-        return self.pre_processor.process(query)
-
     def search(self, query, k: int = 10) -> Optional[DataOut]:
         scores = list()
-        tokens = self.process_query(query)
-        query_vector = self._get_query_vector(tokens)
+        vector = self.representation.embed(query)
         for doc in self.representation.matrix.A:
-            scores.append(cosine_sim(query_vector, doc))
+            scores.append(cosine_sim(vector, doc))
 
         return DataOut(self._get_results(scores, k))
 
@@ -36,15 +29,3 @@ class TFIDFSearcher(BaseSearcher):
             url=self.data[index]['url'],
             score=scores[index]
         ) for index in out]
-
-    def _get_query_vector(self, tokens):
-        n = len(self.representation.vocab)
-        vector = np.zeros(n)
-
-        for token in chain(*tokens):
-            try:
-                index = self.representation.tfidf.vocabulary_[token]
-                vector[index] = 1
-            except ValueError:
-                pass
-        return vector

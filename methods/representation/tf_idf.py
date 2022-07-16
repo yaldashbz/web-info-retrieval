@@ -1,10 +1,14 @@
+import re
+from itertools import chain
 from typing import List
 
+import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from data_collection.utils import get_contents, TOKENS_KEY
 from methods.representation.base import BaseRepresentation
+from preprocess import PreProcessor
 
 
 class TFIDFRepresentation(BaseRepresentation):
@@ -21,3 +25,21 @@ class TFIDFRepresentation(BaseRepresentation):
 
     def represent(self) -> pd.DataFrame:
         return pd.DataFrame(data=self.matrix.toarray(), columns=self.vocab)
+
+    @classmethod
+    def process_query(cls, query: str):
+        preprocessor = PreProcessor()
+        query = re.sub('\\W+', ' ', query).strip()
+        return preprocessor.process(query)
+
+    def embed(self, query: str):
+        tokens = self.process_query(query)
+        n = len(self.vocab)
+        vector = np.zeros(n)
+        for token in chain(*tokens):
+            try:
+                index = self.tfidf.vocabulary_[token]
+                vector[index] = 1
+            except ValueError:
+                pass
+        return vector
