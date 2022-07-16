@@ -1,4 +1,4 @@
-from .search import *
+from .classify import *
 from .cluster import *
-from .classifier import *
 from .link_analyser import *
+from .search import *

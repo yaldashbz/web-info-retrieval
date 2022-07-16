@@ -1,4 +1,8 @@
-from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, confusion_matrix
+import torch
+from sklearn.metrics import (
+    f1_score, accuracy_score,
+    plot_confusion_matrix, confusion_matrix
+)
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from transformers import (
@@ -22,6 +26,7 @@ class TransformerClassifier:
             tokens_key: str = 'tokens'
     ):
         self.data = data
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.X, self.y, self.label2idx = self._getXy(tokens_key)
         if not load:
             self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
@@ -37,7 +42,7 @@ class TransformerClassifier:
             self.datasets = self._get_datasets(*encodings)
             self.y_predicted = None
 
-        self.model = self._get_model(model_name, load)
+        self.model = self._get_model(model_name, load).to(self.device)
         self.generator = None
 
     @classmethod
@@ -98,16 +103,14 @@ class TransformerClassifier:
         return pipeline(
             'text-classification', self.model, tokenizer=self.tokenizer)
 
-    def _predict(self, generator):
-        return [int(y.split('_')) for y in generator([' '.join(x) for x in self.X_test])]
-
     def train(self):
         self._train(*self.datasets[:2])
 
     def test(self):
         y_predicted = []
         for x in tqdm(self.X_test):
-            inp = self.tokenizer(x, truncation=True, padding=True, return_tensors='pt').to('cuda')
+            inp = self.tokenizer(
+                x, truncation=True, padding=True, return_tensors='pt').to(self.device)
             output = self.model(**inp)
             y_predicted.append(output[0].softmax(1).argmax().item())
         self.y_predicted = y_predicted
@@ -117,7 +120,7 @@ class TransformerClassifier:
 
     def classify(self, x):
         inp = self.tokenizer(
-            x, truncation=True, padding=True, return_tensors='pt').to('cuda')
+            x, truncation=True, padding=True, return_tensors='pt').to(self.device)
         output = self.model(**inp)
         y_predicted = (output[0].softmax(1).argmax().item())
         return {v: k for k, v in self.label2idx}[y_predicted]
