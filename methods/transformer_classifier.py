@@ -21,7 +21,7 @@ class TransformerClassifier:
             test_size=valtest_size, random_state=1
         )
         self.X_val, self.X_test, self.y_val, self.y_test = train_test_split(
-            self.X_val, self.y_val,
+            self.X_testval, self.y_testval,
             test_size=test_size, random_state=1
         )
         self.tokenizer = self._get_tokenizer(model_name)
