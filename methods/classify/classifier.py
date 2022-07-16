@@ -55,7 +55,7 @@ class _BaseClassifier:
     def confusion_matrix(self, plot: bool = True):
         if plot:
             plot_confusion_matrix(self.classifier, self.X_test, self.y_test)
-        return confusion_matrix(self.y_test, self.y_predicted, labels=CATEGORIES + [OTHERS])
+        return confusion_matrix(self.y_test, self.y_predicted, labels=self.y)
 
     def build(self):
         raise NotImplementedError

@@ -1,7 +1,8 @@
+import matplotlib.pyplot as plt
 import torch
 from sklearn.metrics import (
     f1_score, accuracy_score,
-    plot_confusion_matrix, confusion_matrix
+    confusion_matrix
 )
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -28,20 +29,18 @@ class TransformerClassifier:
         self.data = data
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.X, self.y, self.label2idx = self._getXy(tokens_key)
-        if not load:
-            self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
-                self.X, self.y,
-                test_size=valtest_size, random_state=1
-            )
-            self.X_val, self.X_test, self.y_val, self.y_test = train_test_split(
-                self.X_testval, self.y_testval,
-                test_size=test_size, random_state=1
-            )
-            self.tokenizer = self._get_tokenizer(model_name)
-            encodings = self._get_encodings(self.tokenizer)
-            self.datasets = self._get_datasets(*encodings)
-            self.y_predicted = None
-
+        self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
+            self.X, self.y,
+            test_size=valtest_size, random_state=1
+        )
+        self.X_val, self.X_test, self.y_val, self.y_test = train_test_split(
+            self.X_testval, self.y_testval,
+            test_size=test_size, random_state=1
+        )
+        self.tokenizer = self._get_tokenizer(model_name)
+        encodings = self._get_encodings(self.tokenizer)
+        self.datasets = self._get_datasets(*encodings)
+        self.y_predicted = None
         self.model = self._get_model(model_name, load).to(self.device)
         self.generator = None
 
@@ -132,7 +131,11 @@ class TransformerClassifier:
         return accuracy_score(self.y_test, self.y_predicted)
 
     def confusion_matrix(self, plot: bool = False):
-        if plot:
-            plot_confusion_matrix(self.generator, self.X_test, self.y_test)
-        return confusion_matrix(
+        matrix = confusion_matrix(
             self.y_test, self.y_predicted, labels=list(self.label2idx.keys()))
+        if plot:
+            plt.matshow(matrix)
+            plt.colorbar()
+            plt.ylabel('True label')
+            plt.xlabel('Predicted label')
+            plt.show()
