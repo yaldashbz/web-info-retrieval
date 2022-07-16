@@ -60,7 +60,10 @@ class _BaseClassifier:
 
 class LogisticRegressionClassifier(_BaseClassifier):
     def classify(self, random_state: float = 0):
-        self.classifier = LogisticRegression(random_state=random_state).fit(
+        self.classifier = LogisticRegression(
+            random_state=random_state,
+            max_iter=300
+        ).fit(
             self.X_train, self.y_train
         )
         self.y_predicted = self.classifier.predict(self.X_test)

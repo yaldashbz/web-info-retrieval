@@ -14,10 +14,11 @@ class TransformerClassifier:
             self, data,
             model_name: str = 'bert-base-cased',
             valtest_size: float = 0.2,
-            test_size: float = 0.5
+            test_size: float = 0.5,
+            tokens_key: str = 'tokens'
     ):
         self.data = data
-        self.X, self.y, self.label2idx = self._getXy()
+        self.X, self.y, self.label2idx = self._getXy(tokens_key)
         self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
             self.X, self.y,
             test_size=valtest_size, random_state=1
@@ -42,7 +43,7 @@ class TransformerClassifier:
             model_name, num_labels=len(self.label2idx)
         )
 
-    def _getXy(self, tokens_key: str = 'tokens'):
+    def _getXy(self, tokens_key: str):
         X = [get_content(doc[tokens_key]) for doc in self.data]
         y = [
             doc['category'] if doc['category'] else OTHERS
