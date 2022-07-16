@@ -42,7 +42,6 @@ class TransformerClassifier:
         self.datasets = self._get_datasets(*encodings)
         self.y_predicted = None
         self.model = self._get_model(model_name, load).to(self.device)
-        self.generator = None
 
     @classmethod
     def _get_tokenizer(cls, model_name):
