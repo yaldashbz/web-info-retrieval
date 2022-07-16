@@ -132,7 +132,7 @@ class TransformerClassifier:
 
     def confusion_matrix(self, plot: bool = False):
         matrix = confusion_matrix(
-            self.y_test, self.y_predicted, labels=list(self.label2idx.keys()))
+            self.y_test, self.y_predicted, labels=list(self.label2idx.values()))
         if plot:
             plt.matshow(matrix)
             plt.colorbar()
