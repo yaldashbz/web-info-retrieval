@@ -34,9 +34,6 @@ class _BaseClassifier:
     ):
         assert data or load_clf
 
-        if method == 'tf-idf' and data is None:
-            raise ValueError('Data should be given for tf-idf embedding.')
-
         self.representation = _representations[method](data=data, **repr_kwargs)
         self.classifier = None if not load_clf else self.load(self.model_path)
 

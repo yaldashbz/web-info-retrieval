@@ -17,7 +17,10 @@ class TFIDFRepresentation(BaseRepresentation):
     # _PATH = '../models/tfidf'
     # _FILE = 'vectorizer.pkl'
 
-    def __init__(self, data, tokens_key: str = TOKENS_KEY, load: bool = False):
+    def __init__(self, data, tokens_key: str = TOKENS_KEY):
+        if data is None:
+            raise ValueError('Data should be given for tf-idf embedding.')
+
         super().__init__(data, tokens_key)
         # if not os.path.exists(self._PATH):
         #     os.mkdir(self._PATH)

@@ -23,12 +23,19 @@ class ContentKMeanCluster:
     _MODEL = 'kmeans.pkl'
     _RESULT = 'result.json'
 
-    def __init__(self, data=None, method: str = 'tf-idf', **repr_kwargs):
+    def __init__(
+            self, data=None,
+            load_cluster: bool = False,
+            method: str = 'tf-idf',
+            **repr_kwargs
+    ):
+        assert data or load_cluster
+
         self.data = data
         self.representation = _representations[method](data=data, **repr_kwargs)
         self.represented_df = self.representation.represent()
-        self.k_means = None if data is not None else self.load_model(self.model_path)
-        self.result_df = None if data is not None else self.load_result(self.result_path)
+        self.k_means = None if not load_cluster else self.load_model(self.model_path)
+        self.result_df = None if not load_cluster else self.load_result(self.result_path)
 
     @property
     def model_path(self):
