@@ -3,7 +3,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 from data_collection import CATEGORIES
 from data_collection.utils import OTHERS
@@ -74,5 +73,3 @@ class NaiveBayesClassifier(_BaseClassifier):
         self.classifier.fit(self.X_train, self.y_train)
         self.y_predicted = self.classifier.predict(self.X_test)
         return self.classifier
-
-
