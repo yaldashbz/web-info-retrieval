@@ -19,6 +19,9 @@ class TFIDFRepresentation(BaseRepresentation):
 
     def __init__(self, data, tokens_key: str = TOKENS_KEY, load: bool = False):
         super().__init__(data, tokens_key)
+        if os.path.exists(self._PATH):
+            os.mkdir(self._PATH)
+
         self.tfidf = self._get_tfidf(load)
 
         if data and not load:
