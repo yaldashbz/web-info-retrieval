@@ -122,7 +122,7 @@ class TransformerClassifier:
             x, truncation=True, padding=True, return_tensors='pt').to(self.device)
         output = self.model(**inp)
         y_predicted = (output[0].softmax(1).argmax().item())
-        return {v: k for k, v in self.label2idx}[y_predicted]
+        return {v: k for k, v in self.label2idx.items()}[y_predicted]
 
     def f1_score(self):
         return f1_score(self.y_test, self.y_predicted, average='macro')
