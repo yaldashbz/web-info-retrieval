@@ -34,27 +34,30 @@ class _BaseClassifier:
     ):
         assert data or load_clf
 
+        if method == 'tf-idf' and data is None:
+            raise ValueError('Data should be given for tf-idf embedding.')
+
+        self.representation = _representations[method](data=data, **repr_kwargs)
+        self.classifier = None if not load_clf else self.load(self.model_path)
+
         if data:
-            self.data = data
-            self.representation = _representations[method](data=data, **repr_kwargs)
-            self.X, self.y = self._getXy()
+            self.X, self.y = self._getXy(data)
             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
                 self.X, self.y,
                 test_size=split_test_size,
                 random_state=split_random_state
             )
             self.y_predicted = None
-        self.classifier = None if not load_clf else self.load(self.model_path)
 
     @property
     def model_path(self):
         raise NotImplementedError
 
-    def _getXy(self):
+    def _getXy(self, data):
         X = self.representation.represent().values
         y = np.array([
             doc['category'] if doc['category'] else OTHERS
-            for doc in self.data
+            for doc in data
         ])
         return X, y
 
