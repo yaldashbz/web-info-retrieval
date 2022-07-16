@@ -1,3 +1,6 @@
+import os
+import pickle
+
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score, accuracy_score, plot_confusion_matrix, confusion_matrix
@@ -19,14 +22,17 @@ _representations = {
 
 
 class _BaseClassifier:
+    _PATH = '../models'
+
     def __init__(
             self, data=None,
+            load_clf: bool = False,
             method: str = 'tf-idf',
             split_test_size: float = 0.1,
             split_random_state: float = 1,
             **repr_kwargs
     ):
-        if data:
+        if not data:
             self.data = data
             self.representation = _representations[method](data=data, **repr_kwargs)
             self.X, self.y = self._getXy()
@@ -36,7 +42,11 @@ class _BaseClassifier:
                 random_state=split_random_state
             )
             self.y_predicted = None
-        self.classifier = None
+        self.classifier = None if not load_clf else self.load(self.model_path)
+
+    @property
+    def model_path(self):
+        raise NotImplementedError
 
     def _getXy(self):
         X = self.representation.represent().values
@@ -45,6 +55,13 @@ class _BaseClassifier:
             for doc in self.data
         ])
         return X, y
+
+    @classmethod
+    def load(cls, path: str):
+        return pickle.load(open(path, 'rb'))
+
+    def save(self, path: str):
+        pickle.dump(self.classifier, open(path, 'wb'))
 
     def f1_score(self):
         return f1_score(self.y_test, self.y_predicted, average='macro')
@@ -57,7 +74,7 @@ class _BaseClassifier:
             plot_confusion_matrix(self.classifier, self.X_test, self.y_test)
         return confusion_matrix(self.y_test, self.y_predicted, labels=self.y)
 
-    def build(self):
+    def build(self, save: bool = True):
         raise NotImplementedError
 
     def classify(self, query):
@@ -67,7 +84,13 @@ class _BaseClassifier:
 
 
 class LogisticRegressionClassifier(_BaseClassifier):
-    def build(self, random_state: float = 0):
+    _FILE = 'logistic_regr.pkl'
+
+    @property
+    def model_path(self):
+        return os.path.join(self._PATH, self._FILE)
+
+    def build(self, save: bool = True, random_state: float = 0):
         self.classifier = LogisticRegression(
             random_state=random_state,
             max_iter=300
@@ -75,12 +98,22 @@ class LogisticRegressionClassifier(_BaseClassifier):
             self.X_train, self.y_train
         )
         self.y_predicted = self.classifier.predict(self.X_test)
+        if save:
+            self.save(self.model_path)
         return self.classifier
 
 
 class NaiveBayesClassifier(_BaseClassifier):
-    def build(self):
+    _FILE = 'naive_bayes.pkl'
+
+    @property
+    def model_path(self):
+        return os.path.join(self._PATH, self._FILE)
+
+    def build(self, save: bool = True):
         self.classifier = GaussianNB()
         self.classifier.fit(self.X_train, self.y_train)
         self.y_predicted = self.classifier.predict(self.X_test)
+        if save:
+            self.save(self.model_path)
         return self.classifier
