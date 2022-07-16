@@ -3,11 +3,11 @@ from sklearn.metrics import f1_score, accuracy_score
 from sklearn.model_selection import train_test_split
 from transformers import TrainingArguments, Trainer, AutoTokenizer, AutoModelForSequenceClassification, pipeline
 
-from data_collection.utils import OTHERS
+from data_collection.utils import OTHERS, get_content
 from methods.utils import WebDataset
 
 
-class TransformerClassifierBuilder:
+class TransformerClassifier:
     def __init__(
             self, data,
             model_name: str = 'bert-base-cased',
@@ -41,7 +41,7 @@ class TransformerClassifierBuilder:
         )
 
     def _getXy(self, tokens_key: str = 'tokens'):
-        X = [' '.join(doc[tokens_key]) for doc in self.data]
+        X = [get_content(doc[tokens_key]) for doc in self.data]
         y = np.array([
             doc['category'] if doc['category'] else OTHERS
             for doc in self.data
