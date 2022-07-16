@@ -1,7 +1,9 @@
-import numpy as np
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn.model_selection import train_test_split
-from transformers import TrainingArguments, Trainer, AutoTokenizer, AutoModelForSequenceClassification, pipeline
+from transformers import (
+    TrainingArguments, Trainer, pipeline,
+    BertTokenizer, BertForSequenceClassification
+)
 
 from data_collection.utils import OTHERS, get_content
 from methods.utils import WebDataset
@@ -15,7 +17,7 @@ class TransformerClassifier:
             test_size: float = 0.5
     ):
         self.data = data
-        self.X, self.y = self._getXy()
+        self.X, self.y, self.label2idx = self._getXy()
         self.X_train, self.X_testval, self.y_train, self.y_testval = train_test_split(
             self.X, self.y,
             test_size=valtest_size, random_state=1
@@ -33,20 +35,22 @@ class TransformerClassifier:
 
     @classmethod
     def _get_tokenizer(cls, model_name):
-        return AutoTokenizer.from_pretrained(model_name)
+        return BertTokenizer.from_pretrained(model_name)
 
     def _get_model(self, model_name):
-        return AutoModelForSequenceClassification.from_pretrained(
-            model_name, num_labels=len(set(self.y))
+        return BertForSequenceClassification.from_pretrained(
+            model_name, num_labels=len(self.label2idx)
         )
 
     def _getXy(self, tokens_key: str = 'tokens'):
         X = [get_content(doc[tokens_key]) for doc in self.data]
-        y = np.array([
+        y = [
             doc['category'] if doc['category'] else OTHERS
             for doc in self.data
-        ])
-        return X, y
+        ]
+        label2idx = {label: i for i, label in enumerate(list(set(y)))}
+        y = [label2idx[label] for label in y]
+        return X, y, label2idx
 
     def _get_encodings(self, tokenizer):
         train_encodings = tokenizer(self.X_train, truncation=True, padding=True)
@@ -86,7 +90,7 @@ class TransformerClassifier:
             'text-classification', self.model, tokenizer=self.tokenizer)
 
     def _predict(self, generator):
-        return generator([' '.join(x) for x in self.X_test])
+        return [int(y.split('_')) for y in generator([' '.join(x) for x in self.X_test])]
 
     def train(self):
         self._train(*self.datasets[:2])
