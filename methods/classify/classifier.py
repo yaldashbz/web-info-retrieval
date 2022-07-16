@@ -32,7 +32,9 @@ class _BaseClassifier:
             split_random_state: float = 1,
             **repr_kwargs
     ):
-        if not data:
+        assert data or load_clf
+
+        if data:
             self.data = data
             self.representation = _representations[method](data=data, **repr_kwargs)
             self.X, self.y = self._getXy()
