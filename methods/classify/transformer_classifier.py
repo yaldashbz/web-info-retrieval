@@ -49,10 +49,10 @@ class TransformerClassifier:
         return BertTokenizer.from_pretrained(model_name)
 
     def _get_model(self, model_name, load: bool):
-        model_name = model_name if not load else self._PATH
-        num_labels = len(self.label2idx) if not load else None
         return BertForSequenceClassification.from_pretrained(
-            model_name, num_labels=num_labels
+            model_name, num_labels=len(self.label2idx)
+        ) if load else BertForSequenceClassification.from_pretrained(
+            self._PATH
         )
 
     def _getXy(self, tokens_key: str):
