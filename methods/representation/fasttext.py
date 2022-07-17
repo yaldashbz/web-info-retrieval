@@ -13,7 +13,6 @@ from methods.representation import BaseRepresentation, PreProcessor
 
 class FasttextRepresentation(BaseRepresentation):
     _EPOCHS = 6
-    _MODEL_PATH = '../models'
     _MODEL_FILE = 'fasttext.model'
 
     def __init__(
@@ -21,19 +20,24 @@ class FasttextRepresentation(BaseRepresentation):
             train: bool = True,
             load: bool = False,
             min_count: int = 4,
-            tokens_key: str = TOKENS_KEY
+            tokens_key: str = TOKENS_KEY,
+            root: str = 'models',
+            folder: str = 'fasttext'
     ):
         assert load != train
 
         super().__init__(data, tokens_key)
-        path = os.path.join(self._MODEL_PATH, self._MODEL_FILE)
-        if not (train or os.path.exists(path)):
+        self.mkdir(root)
+        self.mkdir(os.path.join(root, folder))
+
+        model_file = os.path.join(root, self._MODEL_FILE)
+        if not (train or os.path.exists(model_file)):
             raise ValueError
 
-        self.fasttext = self._get_fasttext(min_count, path, load)
+        self.fasttext = self._get_fasttext(min_count, model_file, load)
         if data and train and not load:
             self._train()
-            self._save_model()
+            self._save_model(model_file)
         self.doc_embedding_avg = self._get_doc_embedding_avg()
 
     @classmethod
@@ -53,10 +57,8 @@ class FasttextRepresentation(BaseRepresentation):
             total_words=self.fasttext.corpus_total_words
         )
 
-    def _save_model(self):
-        if not os.path.exists(self._MODEL_PATH):
-            os.mkdir(self._MODEL_PATH)
-        self.fasttext.save(os.path.join(self._MODEL_PATH, self._MODEL_FILE))
+    def _save_model(self, path):
+        self.fasttext.save(path)
 
     def _get_doc_embedding_avg(self):
         docs_avg = dict()

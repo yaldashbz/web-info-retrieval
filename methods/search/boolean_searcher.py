@@ -17,22 +17,24 @@ OR = 'or'
 
 
 class BooleanSearcher(BaseSearcher):
-    _MATRIX_PATH = '../matrices'
-    _MATRIX_NAME = 'matrix.npz'
-    _HEADER_NAME = 'header.json'
+    _MATRIX_NAME = 'boolean_matrix.npz'
+    _HEADER_NAME = 'boolean_header.json'
 
-    def __init__(self, data, build: bool = True, tokens_key: str = TOKENS_KEY):
+    def __init__(
+            self, data,
+            build: bool = True,
+            tokens_key: str = TOKENS_KEY,
+            root: str = 'matrices'
+    ):
         super().__init__(data, tokens_key)
 
-        matrix_path = os.path.join(self._MATRIX_PATH, self._MATRIX_NAME)
-        header_path = os.path.join(self._MATRIX_PATH, self._HEADER_NAME)
+        matrix_path = os.path.join(root, self._MATRIX_NAME)
+        header_path = os.path.join(root, self._HEADER_NAME)
 
         if not (build or os.path.exists(matrix_path) or os.path.exists(header_path)):
             raise ValueError
 
-        if not os.path.exists(self._MATRIX_PATH):
-            os.mkdir(self._MATRIX_PATH)
-
+        self.mkdir(path=root)
         self.matrix, self.header = self._get_matrix(build, matrix_path, header_path)
 
     def _get_matrix(self, build, matrix_path, header_path):

@@ -1,3 +1,4 @@
+import os
 from abc import abstractmethod, ABC
 from typing import List
 
@@ -24,3 +25,8 @@ class BaseRepresentation(ABC):
 
     def embed(self, query: str):
         raise NotImplementedError
+
+    @classmethod
+    def mkdir(cls, path):
+        if os.path.exists(path):
+            os.mkdir(path)
