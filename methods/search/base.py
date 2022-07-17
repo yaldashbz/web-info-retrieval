@@ -22,5 +22,5 @@ class BaseSearcher(ABC):
 
     @classmethod
     def mkdir(cls, path):
-        if os.path.exists(path):
+        if not os.path.exists(path):
             os.mkdir(path)
