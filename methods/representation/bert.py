@@ -41,7 +41,7 @@ class BertRepresentation(BaseRepresentation):
     @classmethod
     def _get_model(cls, load: bool, model_path: str):
         return SentenceTransformer('distilbert-base-nli-stsb-mean-tokens') \
-            if load else pickle.load(open(model_path, 'rb'))
+            if not load else pickle.load(open(model_path, 'rb'))
 
     def _load_embeddings(self, root):
         return pd.read_json(os.path.join(root, self._FILE))
