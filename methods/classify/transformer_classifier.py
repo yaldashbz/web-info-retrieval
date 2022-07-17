@@ -49,7 +49,11 @@ class TransformerClassifier:
             self.datasets = self._get_datasets(*encodings)
             self.y_predicted = None
         else:
-            self.label2idx = json.load(open(os.path.join(self._PATH, self._LABELS)))
+            self.label2idx = json.load(open(self.label_path, 'r'))
+
+    @property
+    def label_path(self):
+        return os.path.join(self._PATH, self._LABELS)
 
     @classmethod
     def _get_tokenizer(cls, model_name):
@@ -62,24 +66,21 @@ class TransformerClassifier:
             self._PATH, local_files_only=True
         )
 
-    @classmethod
-    def _getXy(cls, data, tokens_key: str):
+    def _getXy(self, data, tokens_key: str):
         X = [get_content(doc[tokens_key]) for doc in data]
         y = [
             doc['category'] if doc['category'] else OTHERS
             for doc in data
         ]
         label2idx = {label: i for i, label in enumerate(list(set(y)))}
-        cls.save_label2idx(label2idx)
+        self.save_label2idx(label2idx)
         y = [label2idx[label] for label in y]
         return X, y, label2idx
 
-    @classmethod
-    def save_label2idx(cls, label2idx):
-        if not os.path.exists(cls._PATH):
-            os.mkdir(cls._PATH)
-        path = os.path.join(cls._PATH, cls._LABELS)
-        json.dump(label2idx, open(path, 'w'))
+    def save_label2idx(self, label2idx):
+        if not os.path.exists(self._PATH):
+            os.mkdir(self._PATH)
+        json.dump(label2idx, open(self.label_path, 'w'))
 
     def _get_encodings(self, tokenizer):
         train_encodings = tokenizer(self.X_train, truncation=True, padding=True)
