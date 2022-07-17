@@ -1,3 +1,4 @@
+import os
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -18,3 +19,8 @@ class BaseSearcher(ABC):
     @abstractmethod
     def search(self, query, k: int = 10) -> Optional[DataOut]:
         pass
+
+    @classmethod
+    def mkdir(cls, path):
+        if os.path.exists(path):
+            os.mkdir(path)

@@ -13,11 +13,15 @@ class FasttextSearcher(BaseSearcher):
             train: bool = True,
             load: bool = False,
             min_count: int = 1,
-            tokens_key: str = TOKENS_KEY
+            tokens_key: str = TOKENS_KEY,
+            root: str = 'models',
+            folder: str = 'fasttext'
     ):
         super().__init__(data, tokens_key)
         self.representation = FasttextRepresentation(
-            data, train=train, load=load, min_count=min_count, tokens_key=tokens_key
+            data, train=train, load=load,
+            min_count=min_count, tokens_key=tokens_key,
+            root=root, folder=folder
         )
 
     def search(self, query, k: int = 10) -> Optional[DataOut]:
