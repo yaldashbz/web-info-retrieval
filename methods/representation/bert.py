@@ -13,33 +13,35 @@ from preprocess import PreProcessor
 
 
 class BertRepresentation(BaseRepresentation):
-    _PATH = '../embeddings'
     _FILE = 'bert_embeddings.json'
 
-    def __init__(self, data, load: bool = False, tokens_key: str = TOKENS_KEY):
+    def __init__(
+            self, data,
+            load: bool = False,
+            tokens_key: str = TOKENS_KEY,
+            root: str = 'embeddings'
+    ):
         super().__init__(data, tokens_key)
-
-        if load and not os.path.exists(os.path.join(self._PATH, self._FILE)):
+        if load and not os.path.exists(os.path.join(root, self._FILE)):
             raise ValueError
 
         self.model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
         self._to_cuda()
+        self.mkdir(root)
 
         if not load and data:
             contents = self.prepare_data()
             self.df = self._get_embeddings(contents)
-            self._save_embeddings()
+            self._save_embeddings(root)
         else:
-            self.df = self._load_embeddings()
+            self.df = self._load_embeddings(root)
         self.embeddings = np.asarray(self.df.values.tolist()).astype('float32')
 
-    def _load_embeddings(self):
-        return pd.read_json(os.path.join(self._PATH, self._FILE))
+    def _load_embeddings(self, root):
+        return pd.read_json(os.path.join(root, self._FILE))
 
-    def _save_embeddings(self):
-        if not os.path.exists(self._PATH):
-            os.mkdir(self._PATH)
-        self.df.to_json(os.path.join(self._PATH, self._FILE))
+    def _save_embeddings(self, root):
+        self.df.to_json(os.path.join(root, self._FILE))
 
     def prepare_data(self) -> List:
         return get_contents(self.data, key=self.tokens_key)
