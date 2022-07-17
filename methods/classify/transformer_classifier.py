@@ -33,7 +33,6 @@ class TransformerClassifier:
         assert data or load
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.tokenizer = self._get_tokenizer(model_name)
-        self.model = self._get_model(model_name, load).to(self.device)
 
         if data:
             self.X, self.y, self.label2idx = self._getXy(data, tokens_key)
@@ -50,6 +49,8 @@ class TransformerClassifier:
             self.y_predicted = None
         else:
             self.label2idx = json.load(open(self.label_path, 'r'))
+
+        self.model = self._get_model(model_name, load).to(self.device)
 
     @property
     def label_path(self):
@@ -156,3 +157,4 @@ class TransformerClassifier:
             plt.ylabel('True label')
             plt.xlabel('Predicted label')
             plt.show()
+        return matrix
