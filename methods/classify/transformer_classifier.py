@@ -58,7 +58,7 @@ class TransformerClassifier:
     def _get_model(self, model_name, load: bool):
         return BertForSequenceClassification.from_pretrained(
             model_name, num_labels=len(self.label2idx)
-        ) if load else BertForSequenceClassification.from_pretrained(
+        ) if not load else BertForSequenceClassification.from_pretrained(
             self._PATH, local_files_only=True
         )
 
@@ -76,7 +76,7 @@ class TransformerClassifier:
 
     @classmethod
     def save_label2idx(cls, label2idx):
-        if os.path.exists(cls._PATH):
+        if not os.path.exists(cls._PATH):
             os.mkdir(cls._PATH)
         path = os.path.join(cls._PATH, cls._LABELS)
         json.dump(label2idx, open(path, 'w'))
