@@ -42,7 +42,7 @@ class BertRepresentation(BaseRepresentation):
     def _get_model(cls, load: bool, model_path: str):
         if not load:
             model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
-            pickle.dump(model, open(model_path, 'wb'))
+            pickle.dump(model.to('cpu'), open(model_path, 'wb'))
             return model
         else:
             return pickle.load(open(model_path, 'rb'))
