@@ -1,5 +1,6 @@
 import itertools
 import os
+import pickle
 from typing import List
 
 import numpy as np
@@ -14,20 +15,20 @@ from preprocess import PreProcessor
 
 class BertRepresentation(BaseRepresentation):
     _FILE = 'bert_embeddings.json'
+    _MODEL = 'distilbert.pkl'
 
     def __init__(
             self, data,
             load: bool = False,
             tokens_key: str = TOKENS_KEY,
-            root: str = 'embeddings'
+            root: str = 'bert'
     ):
         super().__init__(data, tokens_key)
         if load and not os.path.exists(os.path.join(root, self._FILE)):
             raise ValueError
-
-        self.model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
-        self._to_cuda()
         self.mkdir(root)
+        self.model = self._get_model(load, os.path.join(root, self._MODEL))
+        self._to_cuda()
 
         if not load and data:
             contents = self.prepare_data()
@@ -36,6 +37,11 @@ class BertRepresentation(BaseRepresentation):
         else:
             self.df = self._load_embeddings(root)
         self.embeddings = np.asarray(self.df.values.tolist()).astype('float32')
+
+    @classmethod
+    def _get_model(cls, load: bool, model_path: str):
+        return SentenceTransformer('distilbert-base-nli-stsb-mean-tokens') \
+            if load else pickle.load(open(model_path, 'rb'))
 
     def _load_embeddings(self, root):
         return pd.read_json(os.path.join(root, self._FILE))
