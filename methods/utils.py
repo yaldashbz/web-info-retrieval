@@ -1,7 +1,24 @@
-import numpy as np
+from typing import List
+
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
 from sklearn.metrics import silhouette_samples
+
+
+class WebDataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor([self.labels[idx]])
+        return item
+
+    def __len__(self):
+        return len(self.labels)
 
 
 def plot_silhouette(df, n, labels, score):
@@ -39,3 +56,7 @@ def cosine_sim(a, b):
 
 def get_docs_with_urls(data, urls):
     return [doc for doc in data if doc['url'] in urls]
+
+
+def count_same_words(first: List[str], second: List[str]):
+    return len(set(first).intersection(set(second)))

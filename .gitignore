@@ -3,3 +3,4 @@ venv
 *.npz
 *.pyc
 *.json
+clean_data.json

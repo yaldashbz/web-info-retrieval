@@ -1,15 +1,14 @@
-import numpy as np
-import networkx as nx
-import matplotlib.pyplot as plt
 from itertools import chain
 from typing import List
 
+import matplotlib.pyplot as plt
+import networkx as nx
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import normalize
 from tqdm import tqdm
 
 from data_collection.utils import get_sentences
-from methods.linking.utils import count_same_words
+from methods.utils import count_same_words
 
 
 class _BaseGraphBuilder:
@@ -21,13 +20,18 @@ class _BaseGraphBuilder:
     ):
         self.graph = nx.Graph()
         self.sent_num = sent_num
-        self.min_similar = max(0, min_similar)
+        self.min_similar = max(.0, min_similar)
         self.paragraphs = self._get_paragraphs(dataset)
 
     def _get_paragraphs(self, data):
         num = self.sent_num
         return [list(chain(*data[i:i + num]))
                 for i in range(0, len(data), num)]
+
+    def show(self, **kwargs):
+        pos = nx.spiral_layout(self.graph)
+        nx.draw(self.graph, pos, with_labels=True, **kwargs)
+        plt.show()
 
 
 class GraphBuilder(_BaseGraphBuilder):
@@ -73,11 +77,6 @@ class GraphBuilder(_BaseGraphBuilder):
         self.graph.add_nodes_from(nodes)
         self.graph.add_weighted_edges_from(edges)
         return self.graph
-
-    def show(self, **kwargs):
-        pos = nx.spiral_layout(self.graph)
-        nx.draw(self.graph, pos, with_labels=True, **kwargs)
-        plt.show()
 
 
 class TFIDFGraphBuilder(_BaseGraphBuilder):

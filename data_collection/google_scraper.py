@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Comment
 from tqdm import tqdm
 
-from data_collection.data import Document
 from data_collection.base_scraper import BaseWebScraper
+from data_collection.data import Document
 from data_collection.utils import CATEGORIES
 
 
@@ -71,7 +71,8 @@ class GoogleScraper(BaseWebScraper):
                         continue
                     result.add(Document(**{
                         'url': url,
-                        'content': content
+                        'content': content,
+                        'category': query
                     }))
                 except Exception as e:
                     print(e)

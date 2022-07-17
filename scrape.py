@@ -1,5 +1,5 @@
-from data_collection.data import Document
 from data_collection import WikiScraper, GoogleScraper
+from data_collection.data import Document
 
 _scrapers = {
     'wiki': WikiScraper,

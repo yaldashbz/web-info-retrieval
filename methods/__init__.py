@@ -1,4 +1,4 @@
+from .classify import *
 from .cluster import *
-from .representation import *
-from .validator import *
-from .utils import *
+from .link_analyser import *
+from .search import *
