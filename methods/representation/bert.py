@@ -43,6 +43,7 @@ class BertRepresentation(BaseRepresentation):
         if not load:
             model = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
             pickle.dump(model, open(model_path, 'wb'))
+            return model
         else:
             return pickle.load(open(model_path, 'rb'))
 
