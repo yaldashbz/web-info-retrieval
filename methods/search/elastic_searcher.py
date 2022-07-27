@@ -4,7 +4,8 @@ from typing import Optional
 from elasticsearch import Elasticsearch
 from tqdm import tqdm
 
-from methods import BaseSearcher, FasttextQueryExpansion, get_content
+from methods import BaseSearcher, get_content
+from methods.search.query_expansion import FasttextQueryExpansion
 from methods.search.utils import CLOUD_ID, ELASTIC_USER, ELASTIC_PASSWORD, DataOut
 
 
@@ -13,10 +14,10 @@ class ElasticSearcher(BaseSearcher):
 
     def __init__(
             self, data,
-            qe: FasttextQueryExpansion
+            qe: FasttextQueryExpansion,
+            tokens_key: str = 'tokens'
     ):
-        super().__init__(data)
-        self.qe = qe
+        super().__init__(data, qe, tokens_key)
         self.client = Elasticsearch(
             cloud_id=CLOUD_ID,
             basic_auth=(ELASTIC_USER, ELASTIC_PASSWORD)

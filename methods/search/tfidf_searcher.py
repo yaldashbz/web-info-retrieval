@@ -3,9 +3,9 @@ from typing import Optional
 import numpy as np
 
 from data_collection.utils import TOKENS_KEY
-from methods import FasttextQueryExpansion
 from methods.representation import TFIDFRepresentation
 from methods.search.base import BaseSearcher
+from methods.search.query_expansion import FasttextQueryExpansion
 from methods.search.utils import DataOut
 from methods.utils import cosine_sim
 
