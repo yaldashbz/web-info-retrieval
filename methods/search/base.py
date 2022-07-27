@@ -1,9 +1,8 @@
-import os
 from abc import ABC, abstractmethod
 from typing import Optional
 
 from data_collection.utils import TOKENS_KEY
-from methods import FasttextQueryExpansion
+from methods.search.query_expansion import FasttextQueryExpansion
 from methods.search.utils import DataOut
 from preprocess import PreProcessor
 
