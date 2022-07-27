@@ -49,5 +49,4 @@ class FasttextQueryExpansion:
                     max_cosine_similarity = cs
                     most_similar_word = k
             most_similar_query = most_similar_query + ' ' + most_similar_word
-        print(most_similar_query, '***')
         return most_similar_query.strip()
