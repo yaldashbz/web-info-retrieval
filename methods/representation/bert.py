@@ -70,8 +70,11 @@ class BertRepresentation(BaseRepresentation):
     def embed(self, query: str):
         query = self.process_query(query)
         return self.model.encode(
-            query, show_progress_bar=True, normalize_embeddings=True
-        )
+            query,
+            show_progress_bar=True,
+            normalize_embeddings=True,
+            device='cuda' if torch.cuda.is_available() else 'cpu'
+        ).reshape(-1)
 
     def _to_cuda(self):
         if torch.cuda.is_available():

@@ -1,4 +1,6 @@
 import json
+import os
+import environ
 
 import numpy as np
 import pandas as pd
@@ -6,10 +8,22 @@ from tqdm import tqdm
 
 from data_collection.utils import get_doc_words
 
+env = environ.Env()
+environ.Env.read_env()
+
+ELASTIC_USER = env('ELASTIC_USER')
+ELASTIC_PASSWORD = env('ELASTIC_PASSWORD')
+CLOUD_ID = env('CLOUD_ID')
+
 
 class DataOut(list):
     def to_df(self):
         return pd.DataFrame(self)
+
+
+def check_mkdir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
 
 
 def get_dict(big_list):

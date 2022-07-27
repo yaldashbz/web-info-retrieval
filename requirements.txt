@@ -13,3 +13,4 @@ gensim==4.2.0
 yellowbrick==1.4
 networkx==2.8.4
 transformers==4.19.4
+elasticsearch==8.3.1
