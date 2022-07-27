@@ -2,8 +2,9 @@ import json
 import os
 
 from data_collection.utils import get_doc_words
-from methods import FasttextRepresentation, cosine_sim
+from methods import FasttextRepresentation
 from methods.search.utils import check_mkdir
+from methods.utils import cosine_sim
 
 
 class FasttextQueryExpansion:
