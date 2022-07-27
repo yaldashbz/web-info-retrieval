@@ -1,6 +1,6 @@
 import json
 import os
-import environ
+from dotenv import load_dotenv
 
 import numpy as np
 import pandas as pd
@@ -8,12 +8,11 @@ from tqdm import tqdm
 
 from data_collection.utils import get_doc_words
 
-env = environ.Env()
-environ.Env.read_env()
+load_dotenv()
 
-ELASTIC_USER = env('ELASTIC_USER')
-ELASTIC_PASSWORD = env('ELASTIC_PASSWORD')
-CLOUD_ID = env('CLOUD_ID')
+ELASTIC_USER = os.getenv('ELASTIC_USER')
+ELASTIC_PASSWORD = os.getenv('ELASTIC_PASSWORD')
+CLOUD_ID = os.getenv('CLOUD_ID')
 
 
 class DataOut(list):
