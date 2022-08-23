@@ -4,3 +4,4 @@ venv
 *.pyc
 *.json
 clean_data.json
+.env
