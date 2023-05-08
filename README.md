@@ -1,6 +1,6 @@
 # Web Information Retrieval
 
-## Methods
+## Methodss
 This project is search on the web pages with five methods and query expansion:
 - boolean
 - TF-IDF
